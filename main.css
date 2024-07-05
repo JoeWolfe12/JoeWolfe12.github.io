@@ -1,0 +1,108 @@
+html {
+    background: #e6e9e9;
+    background-image: linear-gradient(270deg, rgb(230, 233, 233) 0%, rgb(216, 221, 221) 100%);
+    -webkit-font-smoothing: antialiased;
+    font-family: "Lucida Sans", sans-serif;
+}
+
+body {
+    background: #fff;
+    color: #545454;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 auto;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+header {
+    grid-area: header;
+    background-color: #f1f1f1;
+    padding: 30px;
+    text-align: center;
+    font-size: 20px;
+}
+
+main {
+    margin-left: 200px;
+    display: grid;
+    grid-template-areas: 
+  'header header header header header header' 
+  'left left middle middle right right' 
+  'footer footer footer footer footer footer';
+}
+    
+.left {
+    grid-area: left;
+}
+
+.description {
+    font-size: 8px;
+}
+
+.middle {
+    grid-area: middle;
+}
+
+.right {
+    grid-area: right;
+}
+
+ul {
+    text-align: left;
+}
+.footer {
+    grid-area: footer;
+    font-size: 10px;
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+}
+
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+}
+
+.sidenav a {
+    color: white;
+    padding: 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color on hover */
+.sidenav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.button {
+    background-color: whitesmoke;
+    border: 2px solid #2804aa;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+
+.button:hover{
+    background-color: #2804aa;
+    color: white;
+}
+
+.button a:active {
+    background-color: green;
+    color: white;    
+}
