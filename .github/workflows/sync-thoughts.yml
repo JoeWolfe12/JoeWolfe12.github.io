@@ -15,8 +15,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
           token: ${{ secrets.PAT }}  
+          persist-credentials: true
 
       # 2. Configure AWS creds for S3 access
       - name: Configure AWS credentials
