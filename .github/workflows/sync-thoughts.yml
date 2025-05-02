@@ -28,7 +28,7 @@ jobs:
       - name: Sync articles from S3
         run: |
           mkdir -p _thoughts
-          aws s3 sync s3://elpunce-articles/articles/ _thoughts/
+          aws s3 sync s3://elpunce-thoughts/ _thoughts/
 
       # 4. Commit any new or changed files back to main
       - name: Commit updated thoughts
