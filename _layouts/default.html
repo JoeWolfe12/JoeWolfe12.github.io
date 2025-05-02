@@ -6,6 +6,12 @@
   <title>{{ page.title }} – {{ site.title | default: "My Site" }}</title>
 </head>
 <body>
+    <nav>
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/about/' | relative_url }}">About</a>
+        <a href="{{ '/projects/' | relative_url }}">Projects</a>
+        <a href="{{ '/thoughts/' | relative_url }}">Thoughts</a>
+    </nav>
   <main>
     {{ content }}
   </main>
