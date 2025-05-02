@@ -1,0 +1,5 @@
+title: "Elpunce"
+collections:
+  thoughts:
+    output: true
+    permalink: /thoughts/:path/
