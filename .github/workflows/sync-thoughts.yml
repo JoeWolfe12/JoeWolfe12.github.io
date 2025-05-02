@@ -36,3 +36,4 @@ jobs:
         with:
           commit_message: "chore: sync thoughts from s3"
           branch: main
+          token: ${{ secrets.PAT }}
