@@ -41,7 +41,7 @@ jobs:
         run: gem install jekyll
 
       - name: Build site to docs/
-        run: build --destination docs
+        run: jekyll build --destination docs
 
       # 4. Stop GitHub Pages from re‑running Jekyll
       - name: Add .nojekyll
