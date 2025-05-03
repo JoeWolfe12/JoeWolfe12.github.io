@@ -1,51 +1,57 @@
-steps:
-  # 1. Checkout entire repo (with PAT for future push)
-  - name: Checkout main with PAT
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 0
-      token: ${{ secrets.PAT }}
+name: 🌐 Build & Deploy Site (private S3 articles)
 
-  # 2. Sync Markdown articles from private S3 into _thoughts/ locally
-  - name: Configure AWS credentials
-    uses: aws-actions/configure-aws-credentials@v2
-    with:
-      aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      aws-region:            ${{ secrets.AWS_REGION }}
+on:
+  push:           # run on every push to main
+    branches: [ main ]
+  schedule:       # run nightly
+    - cron: '0 2 * * *'
+  workflow_dispatch:   # allow manual trigger
 
-  - name: Sync articles from S3
-    run: |
-      mkdir -p _thoughts
-      aws s3 sync s3://elpunce-thoughts/ _thoughts/
+jobs:
+  build-site:
+    runs-on: ubuntu-latest
 
-  # 3. Setup Ruby & Jekyll dependencies
-  - name: Setup Ruby
-    uses: ruby/setup-ruby@v1
-    with:
-      ruby-version: '3.x'
-  - name: Install Jekyll
-    run: |
-      gem install bundler jekyll
-      bundle install --jobs 4 --retry 3
+    steps:
+      # 1. Checkout repo using your PAT (so we can push later)
+      - name: Checkout main with PAT
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
 
-  # 4. Build the site into docs/ for GitHub Pages
-  - name: Build site to docs/
-    run: |
-      bundle exec jekyll build --destination docs
+      # 2. Pull Markdown articles from your private S3 bucket
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+      - name: Sync articles from S3
+        run: |
+          mkdir -p _thoughts
+          aws s3 sync s3://elpunce-thoughts/ _thoughts/
 
-  # 5. Prevent GitHub Pages from re-running Jekyll on docs/
-  - name: Add .nojekyll
-    run: |
-      touch docs/.nojekyll
+      # 3. Build the Jekyll site into docs/
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.x'
+      - name: Install Jekyll
+        run: |
+          gem install bundler jekyll
+          bundle install --jobs 4 --retry 3
+      - name: Build site to docs/
+        run: |
+          bundle exec jekyll build --destination docs
 
-  # 6. Commit only the built docs/ to main branch
-  - name: Commit built site
-    uses: stefanzweifel/git-auto-commit-action@v4
-    with:
-      commit_message: "chore: deploy site update"
-      branch: main
-      file_pattern: "docs/** CNAME .nojekyll assets/**"  
+      # 4. Stop GitHub Pages from re‑running Jekyll
+      - name: Add .nojekyll
+        run: touch docs/.nojekyll
 
-  # 6. Configure GitHub Pages to serve from docs/
-  # (Ensure in repo Settings > Pages: branch main, folder /docs)
+      # 5. Commit only docs/ (and CNAME) back to main
+      - name: Commit built site
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore: deploy site update"
+          branch: main
+          file_pattern: "docs/** docs/.nojekyll CNAME"
