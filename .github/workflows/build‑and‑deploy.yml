@@ -36,13 +36,12 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
+      
       - name: Install Jekyll
-        run: |
-          gem install bundler jekyll
-          bundle install --jobs 4 --retry 3
+        run: gem install jekyll
+
       - name: Build site to docs/
-        run: |
-          bundle exec jekyll build --destination docs
+        run: build --destination docs
 
       # 4. Stop GitHub Pages from re‑running Jekyll
       - name: Add .nojekyll
