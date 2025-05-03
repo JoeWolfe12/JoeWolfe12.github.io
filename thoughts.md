@@ -6,11 +6,18 @@ permalink: /thoughts/
 
 # Thoughts
 
-<label for="tag-filter">Filter by tag:</label>
+{% assign thoughts_tags = "" | split: "" %}
+{% for doc in site.thoughts %}
+  {% if doc.tags %}
+    {% assign thoughts_tags = thoughts_tags | concat: doc.tags %}
+  {% endif %}
+{% endfor %}
+{% assign thoughts_tags = thoughts_tags | uniq | sort %}
+
 <select id="tag-filter">
   <option value="">— All —</option>
-  {% for tag in site.tags %}
-    <option value="{{ tag[0] }}">{{ tag[0] }} ({{ tag[1].size }})</option>
+  {% for tag in thoughts_tags %}
+    <option value="{{ tag }}">{{ tag }}</option>
   {% endfor %}
 </select>
 
