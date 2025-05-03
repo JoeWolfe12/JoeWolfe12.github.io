@@ -36,6 +36,10 @@ jobs:
         run: |
           echo 'Fetched posts:'
           ls -R _thoughts || true
+
+      # issues with the list not appearing
+      - name: Force list page to regenerate
+        run: touch thoughts.md
       
       - name: Clean old docs
         run: rm -rf docs
