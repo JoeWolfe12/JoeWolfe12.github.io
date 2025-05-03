@@ -37,11 +37,8 @@ jobs:
           echo 'Fetched posts:'
           ls -R _thoughts || true
       
-      - name: Show first lines of the article
-        run: |
-          echo '---- BEGIN test_article.md ----'
-          head -n 15 _thoughts/test_article.md | cat -n
-          echo '----  END test_article.md  ----'
+      - name: Clean old docs
+        run: rm -rf docs
 
       # 3. Build the Jekyll site into docs/
       - name: Setup Ruby
