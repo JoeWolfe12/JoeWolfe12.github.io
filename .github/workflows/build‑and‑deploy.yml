@@ -49,14 +49,6 @@ jobs:
           mkdir -p docs
           touch docs/.nojekyll
 
-      # sanity check
-
-      - name: Inspect docs before commit
-        run: |
-          echo "::group::Listing docs/"
-          ls -R docs | head -n 40
-          echo "::endgroup::
-
       # 5. Commit only docs/ (and CNAME) back to main
       - name: Commit built site
         uses: stefanzweifel/git-auto-commit-action@v4
