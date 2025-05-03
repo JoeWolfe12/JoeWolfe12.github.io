@@ -18,9 +18,9 @@ Gather all unique tags from the *thoughts* collection
 <label for="tag-filter">Filter by tag:</label>
 <select id="tag-filter">
   <option value="">— All —</option>
-  {% for tag in thoughts_tags %}
+{% for tag in thoughts_tags %}
   <option value="{{ tag }}">{{ tag }}</option>
-  {% endfor %}
+{% endfor %}
 </select>
 
 <ul id="posts-list">
