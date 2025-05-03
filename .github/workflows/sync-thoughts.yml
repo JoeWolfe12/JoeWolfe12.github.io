@@ -1,46 +1,46 @@
-name: 📥 Sync Thoughts from S3
+steps:
+  # 1. Checkout entire repo (with PAT for future push)
+  - name: Checkout main with PAT
+    uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+      token: ${{ secrets.PAT }}
 
-on:
-  schedule:
-    - cron: '0 2 * * *'     # daily at 02:00 UTC; adjust as you like
-  workflow_dispatch:        # manual trigger
+  # 2. Sync Markdown articles from private S3 into _thoughts/ locally
+  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v2
+    with:
+      aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region:            ${{ secrets.AWS_REGION }}
 
-jobs:
-  sync-thoughts:
-    runs-on: ubuntu-latest
+  - name: Sync articles from S3
+    run: |
+      mkdir -p _thoughts
+      aws s3 sync s3://elpunce-thoughts/ _thoughts/
 
-    steps:
-      # 1. Checkout your repo (full history so git-auto-commit can diff)
-      - name: Checkout main with PAT
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}  
-          persist-credentials: true
+  # 3. Setup Ruby & Jekyll dependencies
+  - name: Setup Ruby
+    uses: ruby/setup-ruby@v1
+    with:
+      ruby-version: '3.x'
+  - name: Install Jekyll
+    run: |
+      gem install bundler jekyll
+      bundle install --jobs 4 --retry 3
 
-      # 2. Configure Git to use PAT explicitly for pushes
-      - name: Configure Git to use PAT
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+  # 4. Build the site into docs/ for GitHub Pages
+  - name: Build site to docs/
+    run: |
+      bundle exec jekyll build --destination docs
 
-      # 3. Configure AWS creds for S3 access
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:            ${{ secrets.AWS_REGION }}
+  # 5. Commit only the built docs/ to main branch
+  - name: Commit built site
+    uses: stefanzweifel/git-auto-commit-action@v4
+    with:
+      commit_message: "chore: deploy site update"
+      branch: main
+      file_pattern: "docs/** CNAME .nojekyll assets/**"  
 
-      # 4. Sync your private .md files into the _thoughts/ folder
-      - name: Sync articles from S3
-        run: |
-          mkdir -p _thoughts
-          aws s3 sync s3://elpunce-thoughts/ _thoughts/
-
-      # 5. Commit any new or changed files back to main
-      - name: Commit updated thoughts
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "chore: sync thoughts from s3"
-          branch: main
-          
+  # 6. Configure GitHub Pages to serve from docs/
+  # (Ensure in repo Settings > Pages: branch main, folder /docs)
