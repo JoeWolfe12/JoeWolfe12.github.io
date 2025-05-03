@@ -35,7 +35,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.x'
+          ruby-version: '3.2'
       - name: Install Jekyll
         run: |
           gem install bundler jekyll
@@ -46,7 +46,17 @@ jobs:
 
       # 4. Stop GitHub Pages from re‑running Jekyll
       - name: Add .nojekyll
-        run: touch docs/.nojekyll
+        run: |
+          mkdir -p docs
+          touch docs/.nojekyll
+
+      # sanity check
+
+      - name: Inspect docs before commit
+        run: |
+          echo "::group::Listing docs/"
+          ls -R docs | head -n 40
+          echo "::endgroup::
 
       # 5. Commit only docs/ (and CNAME) back to main
       - name: Commit built site
@@ -54,4 +64,9 @@ jobs:
         with:
           commit_message: "chore: deploy site update"
           branch: main
-          file_pattern: "docs/** docs/.nojekyll CNAME"
+          file_pattern: |
+            docs/*
+            docs/**/*
+            CNAME
+            docs/.nojekyll
+
