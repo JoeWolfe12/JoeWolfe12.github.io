@@ -34,7 +34,12 @@ steps:
     run: |
       bundle exec jekyll build --destination docs
 
-  # 5. Commit only the built docs/ to main branch
+  # 5. Prevent GitHub Pages from re-running Jekyll on docs/
+  - name: Add .nojekyll
+    run: |
+      touch docs/.nojekyll
+
+  # 6. Commit only the built docs/ to main branch
   - name: Commit built site
     uses: stefanzweifel/git-auto-commit-action@v4
     with:
