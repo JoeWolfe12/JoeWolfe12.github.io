@@ -18,7 +18,12 @@ jobs:
           token: ${{ secrets.PAT }}  
           persist-credentials: true
 
-      # 2. Configure AWS creds for S3 access
+      # 2. Configure Git to use PAT explicitly for pushes
+      - name: Configure Git to use PAT
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+
+      # 3. Configure AWS creds for S3 access
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -26,13 +31,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ secrets.AWS_REGION }}
 
-      # 3. Sync your private .md files into the _thoughts/ folder
+      # 4. Sync your private .md files into the _thoughts/ folder
       - name: Sync articles from S3
         run: |
           mkdir -p _thoughts
           aws s3 sync s3://elpunce-thoughts/ _thoughts/
 
-      # 4. Commit any new or changed files back to main
+      # 5. Commit any new or changed files back to main
       - name: Commit updated thoughts
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
