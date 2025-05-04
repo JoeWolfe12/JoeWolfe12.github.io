@@ -4,7 +4,7 @@ title: Thoughts
 permalink: /thoughts/
 ---
 
-# Thoughts
+<h1>Thoughts</h1>
 
 {% comment %} Gather all unique tags from the *thoughts* collection {% endcomment %}
 {% assign thoughts_tags = "" | split: "" %}
@@ -31,3 +31,24 @@ permalink: /thoughts/
   </li>
 {% endfor %}
 </ul>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const dropdown = document.getElementById('tag-filter');
+    const posts = document.querySelectorAll('#posts-list li');
+
+    dropdown.addEventListener('change', function () {
+      const selectedTag = this.value;
+
+      posts.forEach(post => {
+        const tags = post.getAttribute('data-tags').split(',');
+
+        if (!selectedTag || tags.includes(selectedTag)) {
+          post.style.display = '';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
