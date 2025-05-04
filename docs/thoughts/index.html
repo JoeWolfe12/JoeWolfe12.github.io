@@ -13,7 +13,7 @@
         <a href="/thoughts/">Thoughts</a>
     </nav>
   <main>
-    # Thoughts
+    <h1>Thoughts</h1>
 
 
 
@@ -38,6 +38,27 @@
   </li>
 
 </ul>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const dropdown = document.getElementById('tag-filter');
+    const posts = document.querySelectorAll('#posts-list li');
+
+    dropdown.addEventListener('change', function () {
+      const selectedTag = this.value;
+
+      posts.forEach(post => {
+        const tags = post.getAttribute('data-tags').split(',');
+
+        if (!selectedTag || tags.includes(selectedTag)) {
+          post.style.display = '';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
   </main>
   <script src="/assets/js/main.js"></script>
 </body>
