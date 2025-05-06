@@ -13,31 +13,33 @@
         <a href="/thoughts/">Thoughts</a>
     </nav>
   <main>
-    <h1>Thoughts</h1>
+    <section class="page-box">
+  <h1>Thoughts</h1>
 
-
-
-
-
-
-<label for="tag-filter">Filter by tag:</label>
-<select id="tag-filter">
-  <option value="">— All —</option>
   
-    <option value="quote">quote</option>
   
-    <option value="test">test</option>
   
-</select>
+  
 
-<ul id="posts-list">
+  <label for="tag-filter">Filter by tag:</label>
+  <select id="tag-filter">
+    <option value="">— All —</option>
+    
+      <option value="quote">quote</option>
+    
+      <option value="test">test</option>
+    
+  </select>
 
-  <li data-tags="test,quote">
-    <a href="/thoughts/test_article/">My Test Article</a>
-    <small>2025-01-01</small>
-  </li>
-
-</ul>
+  <ul id="posts-list">
+    
+      <li data-tags="test,quote">
+        <a href="/thoughts/test_article/">My Test Article</a>
+        <small>2025-01-01</small>
+      </li>
+    
+  </ul>
+</section>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
