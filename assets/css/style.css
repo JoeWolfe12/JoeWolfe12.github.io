@@ -7,13 +7,13 @@ body {
     line-height: 1.6;
   }
   
-  .container {
+.container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
   }
 
-  .navbar {
+.navbar {
     background-color: #ffffff;
     padding: 1rem 2rem;
     display: flex;
@@ -22,17 +22,18 @@ body {
     position: sticky;
     top: 0;
   }
-  .navbar a {
+
+.navbar a {
     text-decoration: none;
     color: #4f46e5;
     font-weight: 500;
   }
 
-  nav a:hover {
+nav a:hover {
     text-decoration: underline;
   }
 
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
     .container {
       padding: 1rem;
     }
@@ -43,7 +44,7 @@ body {
     }
   }
 
-  .page-box {
+.page-box {
     background: white;
     padding: 2rem;
     border-radius: 12px;
@@ -52,43 +53,43 @@ body {
     max-width: 800px;
   }
   
-  .page-box h1 {
+.page-box h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
   }
   
-  .page-box p {
+.page-box p {
     margin-bottom: 1rem;
     line-height: 1.6;
   }
 
-  table {
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1.5rem;
     font-size: 0.95rem;
   }
   
-  thead {
+thead {
     background-color: #f3f4f6; /* light gray */
   }
   
-  th, td {
+th, td {
     padding: 0.75rem 1rem;
     text-align: left;
     border-bottom: 1px solid #e5e7eb;
     vertical-align: top;
   }
   
-  th {
+th {
     font-weight: 600;
     color: #374151;
   }
   
-  tr:nth-child(even) {
+tr:nth-child(even) {
     background-color: #fafafa;
   }
   
-  tr:hover {
+ tr:hover {
     background-color: #f1f5f9;
   }
