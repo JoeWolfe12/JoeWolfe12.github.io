@@ -30,22 +30,26 @@ body {
   }
   
 .nav-inner a {
-    background-color: #4f46e5;
-    color: white;
+    background-color: #e5e7eb; 
+    color: #111827;            
     padding: 0.5rem 1rem;
+    width: 120px;              
+    text-align: center;
     text-decoration: none;
     border-radius: 6px;
     font-weight: 500;
     transition: background 0.2s ease;
+    display: inline-block;
   }
   
 .nav-inner a:hover {
-    background-color: #4338ca;
+    background-color: #d1d5db; 
   }
   
 .nav-inner a.active {
-    background-color: #4338ca;
-    box-shadow: inset 0 0 0 2px #312e81;
+    background-color: #9ca3af; 
+    box-shadow: inset 0 0 0 2px #6b7280; 
+    color: #ffffff;
   }
 
 @media (max-width: 600px) {
