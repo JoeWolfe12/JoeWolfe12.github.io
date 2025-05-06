@@ -8,12 +8,14 @@
   <link rel="icon" href="{{ '/assets/images/sabinicon.png' | relative_url }}" type="image/png">
 </head>
 <body>
-    <nav>
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <a href="{{ '/about/' | relative_url }}">About</a>
-        <a href="{{ '/projects/' | relative_url }}">Projects</a>
-        <a href="{{ '/thoughts/' | relative_url }}">Thoughts</a>
-    </nav>
+  <nav class="nav-container">
+    <div class="nav-inner">
+      <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}">Home</a>
+      <a href="{{ '/about/' | relative_url }}" class="{% if page.url == '/about/' %}active{% endif %}">About</a>
+      <a href="{{ '/projects/' | relative_url }}" class="{% if page.url == '/projects/' %}active{% endif %}">Projects</a>
+      <a href="{{ '/thoughts/' | relative_url }}" class="{% if page.url == '/thoughts/' %}active{% endif %}">Thoughts</a>
+    </div>
+  </nav>
   <main>
     {{ content }}
   </main>
