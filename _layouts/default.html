@@ -12,17 +12,17 @@
     <div class="nav-inner">
       <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}">Home</a>
       <a href="{{ '/about/' | relative_url }}" class="{% if page.url == '/about/' %}active{% endif %}">About</a>
-      <a href="{{ '/projects/' | relative_url }}" class="{% if page.url contains '/projects/' %}active{% endif %}">Projects</a>
+      <div class="nav-item projects{% if page.url contains '/projects/' %} active{% endif %}">
+        <a href="{{ '/projects/' | relative_url }}" class="{% if page.url contains '/projects/' %}active{% endif %}">Projects</a>
+        {% if page.url contains '/projects/afl-data/' %}
+        <div class="nav-sub-menu">
+          <a href="/projects/afl-data/" class="{% if page.url contains '/projects/afl-data/' %}active{% endif %}">Footy Numbers</a>
+        </div>
+        {% endif %}
+      </div>
       <a href="{{ '/thoughts/' | relative_url }}" class="{% if page.url == '/thoughts/' %}active{% endif %}">Thoughts</a>
     </div>
   </nav>
-  {% if page.url contains '/projects/afl-data/' %}
-  <nav class="nav-container">
-    <div class="nav-inner" style="font-size: 0.95em;">
-      <a href="/projects/afl-data/" class="{% if page.url contains '/projects/afl-data/' %}active{% endif %}">AFL Data Home</a>
-    </div>
-  </nav>
-{% endif %}
   <main>
     {{ content }}
   </main>
