@@ -120,6 +120,7 @@ pre, code {
   padding: 0.8em 1em;
   font-size: 0.98em;
   font-family: 'Fira Mono', 'Consolas', 'Monaco', 'monospace';
+  line-height: 1.5; 
 }
 
 pre {
@@ -148,4 +149,31 @@ pre {
   white-space: pre-line;
   border-radius: 8px;
   overflow-x: auto;
+}
+
+.table-accordion summary {
+  padding: 0.6em 1em;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 1em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  outline: none;
+  transition: background 0.2s;
+}
+.table-accordion[open] summary {
+  background: #e0e7ef;
+}
+.table-accordion summary::-webkit-details-marker {
+  display: none;
+}
+.table-accordion summary:after {
+  content: " ▼";
+  font-size: 0.8em;
+  color: #666;
+  transition: transform 0.2s;
+}
+.table-accordion[open] summary:after {
+  content: " ▲";
+  color: #222;
 }

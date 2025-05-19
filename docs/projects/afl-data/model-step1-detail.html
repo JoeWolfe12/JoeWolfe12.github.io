@@ -29,130 +29,137 @@
     <li>All the venues that any of these games were played at</li>
   </ul>
   <p>
-    If you want to see what makes up the data, then feel free to examine the tables below.
-  </p>
-  <p>
-    Please note, for all of these tables I have excluded some id fields that were used to match data (such as the id fields within the Kaggle or afltables dataset)
-  </p>
+  If you want to see what makes up the data, then feel free to examine the tables below.
+</p>
+<p>
+  <strong>You can skip the detailed data tables if you want:</strong>
+</p>
 
-  <h2>Table 1: Every individual game between 2010 and round 9, 2025 (<code>player_game_stats</code>)</h2>
+<details class="table-accordion">
+  <summary style="font-weight: bold; font-size: 1.1em; cursor: pointer; padding: 0.6em 1em; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 1em; box-shadow: 0 2px 8px rgba(0,0,0,0.02); outline: none; transition: background 0.2s;">
+    Show/hide data tables (click to expand/collapse)
+  </summary>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Column</th>
-        <th>Data Type</th>
-        <th>Definition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>id</td><td>integer</td><td>Unique record for player game stat entry</td></tr>
-      <tr><td>player_id</td><td>integer</td><td>Player identifier</td></tr>
-      <tr><td>game_id</td><td>integer</td><td>Game identifier</td></tr>
-      <tr><td>team_id</td><td>integer</td><td>Team the player was playing for</td></tr>
-      <tr><td>opponent_team_id</td><td>integer</td><td>Team the player was playing against</td></tr>
-      <tr><td>kicks</td><td>integer</td><td>Kicks</td></tr>
-      <tr><td>marks</td><td>integer</td><td>Marks</td></tr>
-      <tr><td>handballs</td><td>integer</td><td>Handballs</td></tr>
-      <tr><td>disposals</td><td>integer</td><td>Kicks + handballs</td></tr>
-      <tr><td>goals</td><td>integer</td><td>Goals scored</td></tr>
-      <tr><td>behinds</td><td>integer</td><td>Behinds scored</td></tr>
-      <tr><td>hit_outs</td><td>integer</td><td>Hit outs</td></tr>
-      <tr><td>tackles</td><td>integer</td><td>Tackles</td></tr>
-      <tr><td>rebounds</td><td>integer</td><td>Moving the ball from the defensive 50 into the midfield</td></tr>
-      <tr><td>inside_50</td><td>integer</td><td>Moving the ball from the midfield into the forward 50; excludes multiple entries within same chain</td></tr>
-      <tr><td>clearances</td><td>integer</td><td>First effective disposal in a chain that clears the stoppage area, or an ineffective/clanger kick that clears stoppage</td></tr>
-      <tr><td>clangers</td><td>integer</td><td>Error made by a player resulting in a negative result for their side</td></tr>
-      <tr><td>frees_for</td><td>integer</td><td>Frees awarded to player</td></tr>
-      <tr><td>frees_against</td><td>integer</td><td>Frees conceded by player</td></tr>
-      <tr><td>brownlow_votes</td><td>integer</td><td>Brownlow Medal votes, awarded by umpires</td></tr>
-      <tr><td>contested_&nbsp;possessions</td><td>integer</td><td>Possession won when the ball is in dispute (looseball-gets, hardball-gets, contested marks, etc.)</td></tr>
-      <tr><td>uncontested_possessions</td><td>integer</td><td>Possessions gained under no physical pressure</td></tr>
-      <tr><td>contested_marks</td><td>integer</td><td>A mark under physical pressure of an opponent or in a pack</td></tr>
-      <tr><td>marks_inside_50</td><td>integer</td><td>Marks taken inside forward 50</td></tr>
-      <tr><td>one_percenters</td><td>integer</td><td>Defensive effort (spoil, knock-on, smother or shepherd)</td></tr>
-      <tr><td>bounces</td><td>integer</td><td>Bounces</td></tr>
-      <tr><td>goal_assists</td><td>integer</td><td>Creating a goal by getting the ball to a teammate by any means (disposal, knock-on, ground kick, hitout, etc.)</td></tr>
-      <tr><td>time_on_ground_pct</td><td>numeric</td><td>Time on ground during a game divided by total game time (%)</td></tr>
-    </tbody>
-  </table>
+  <div style="margin-top: 1.2em;">
+    <h2>Table 1: Every individual game between 2010 and round 9, 2025 (table name: player_game_stats)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Column</th>
+          <th>Data Type</th>
+          <th>Definition</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>id</td><td>integer</td><td>Unique record for player game stat entry</td></tr>
+        <tr><td>player_id</td><td>integer</td><td>Player identifier</td></tr>
+        <tr><td>game_id</td><td>integer</td><td>Game identifier</td></tr>
+        <tr><td>team_id</td><td>integer</td><td>Team the player was playing for</td></tr>
+        <tr><td>opponent_team_id</td><td>integer</td><td>Team the player was playing against</td></tr>
+        <tr><td>kicks</td><td>integer</td><td>Kicks</td></tr>
+        <tr><td>marks</td><td>integer</td><td>Marks</td></tr>
+        <tr><td>handballs</td><td>integer</td><td>Handballs</td></tr>
+        <tr><td>disposals</td><td>integer</td><td>Kicks + handballs</td></tr>
+        <tr><td>goals</td><td>integer</td><td>Goals scored</td></tr>
+        <tr><td>behinds</td><td>integer</td><td>Behinds scored</td></tr>
+        <tr><td>hit_outs</td><td>integer</td><td>Hit outs</td></tr>
+        <tr><td>tackles</td><td>integer</td><td>Tackles</td></tr>
+        <tr><td>rebounds</td><td>integer</td><td>Moving the ball from the defensive 50 into the midfield</td></tr>
+        <tr><td>inside_50</td><td>integer</td><td>Moving the ball from the midfield into the forward 50; excludes multiple entries within same chain</td></tr>
+        <tr><td>clearances</td><td>integer</td><td>First effective disposal in a chain that clears the stoppage area, or an ineffective/clanger kick that clears stoppage</td></tr>
+        <tr><td>clangers</td><td>integer</td><td>Error made by a player resulting in a negative result for their side</td></tr>
+        <tr><td>frees_for</td><td>integer</td><td>Frees awarded to player</td></tr>
+        <tr><td>frees_against</td><td>integer</td><td>Frees conceded by player</td></tr>
+        <tr><td>brownlow_votes</td><td>integer</td><td>Brownlow Medal votes, awarded by umpires</td></tr>
+        <tr><td>contested_&nbsp;possessions</td><td>integer</td><td>Possession won when the ball is in dispute (looseball-gets, hardball-gets, contested marks, etc.)</td></tr>
+        <tr><td>uncontested_possessions</td><td>integer</td><td>Possessions gained under no physical pressure</td></tr>
+        <tr><td>contested_marks</td><td>integer</td><td>A mark under physical pressure of an opponent or in a pack</td></tr>
+        <tr><td>marks_inside_50</td><td>integer</td><td>Marks taken inside forward 50</td></tr>
+        <tr><td>one_percenters</td><td>integer</td><td>Defensive effort (spoil, knock-on, smother or shepherd)</td></tr>
+        <tr><td>bounces</td><td>integer</td><td>Bounces</td></tr>
+        <tr><td>goal_assists</td><td>integer</td><td>Creating a goal by getting the ball to a teammate by any means (disposal, knock-on, ground kick, hitout, etc.)</td></tr>
+        <tr><td>time_on_ground_pct</td><td>numeric</td><td>Time on ground during a game divided by total game time (%)</td></tr>
+      </tbody>
+    </table>
 
-  <p>
-    For more information on the definitions of above, or how they are recorded, visit the <a href="https://www.afl.com.au/stats" target="_blank">AFL site</a>. The data was sourced from afltables.com, footywire.com, and the AFL dataset on Kaggle. For the purpose of this analysis I am going to assume everything was correctly recorded and that my data is correct. I conducted random spot checking of ~5 games each season to ensure confidence, and all information can be found in my <a href="(insert link)">github</a>.
-  </p>
+    <p>
+      For more information on the definitions of above, or how they are recorded, visit the <a href="https://www.afl.com.au/stats" target="_blank">AFL site</a>. The data was sourced from afltables.com, footywire.com, and the AFL dataset on Kaggle. For the purpose of this analysis I am going to assume everything was correctly recorded and that my data is correct. I conducted random spot checking of ~5 games each season to ensure confidence, and all information can be found in my <a href="(insert link)">github</a>.
+    </p>
 
-  <h2>Table 2: Game level data between 2010 and round 9, 2025 (<code>games</code>)</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Column</th><th>Data Type</th><th>Definition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>round</td><td>text</td><td>Round label (e.g R3, QF)</td></tr>
-      <tr><td>game_date</td><td>date</td><td>Date game was played (YYYY-MM-DD)</td></tr>
-      <tr><td>venue_id</td><td>integer</td><td>Ground the game was played at (venue ID)</td></tr>
-      <tr><td>home_team_id</td><td>integer</td><td>Home team ID</td></tr>
-      <tr><td>away_team_id</td><td>integer</td><td>Away team ID</td></tr>
-      <tr><td>season_year</td><td>integer</td><td>Season year</td></tr>
-      <tr><td>afltables_game_id</td><td>integer</td><td>Game ID from AFL Tables source</td></tr>
-      <tr><td>home_score_str</td><td>character varying</td><td>Home team score as a string (e.g "10.9.69")</td></tr>
-      <tr><td>away_score_str</td><td>character varying</td><td>Away team score as a string (e.g "4.17.41")</td></tr>
-      <tr><td>home_score_goals</td><td>integer</td><td>Home team goals</td></tr>
-      <tr><td>home_score_behinds</td><td>integer</td><td>Home team behinds</td></tr>
-      <tr><td>home_score_total</td><td>integer</td><td>Home team total score</td></tr>
-      <tr><td>away_score_goals</td><td>integer</td><td>Away team goals</td></tr>
-      <tr><td>away_score_behinds</td><td>integer</td><td>Away team behinds</td></tr>
-      <tr><td>away_score_total</td><td>integer</td><td>Away team total score</td></tr>
-      <tr><td>margin</td><td>integer</td><td>Score margin as an absolute value</td></tr>
-      <tr><td>home_result</td><td>character</td><td>Result for home team (W = win, L = loss, D = draw)</td></tr>
-      <tr><td>away_result</td><td>character</td><td>Result for away team (W = win, L = loss, D = draw)</td></tr>
-    </tbody>
-  </table>
+    <h2>Table 2: Game level data between 2010 and round 9, 2025 (table name: games)</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Column</th><th>Data Type</th><th>Definition</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td>round</td><td>text</td><td>Round label (e.g R3, QF)</td></tr>
+        <tr><td>game_date</td><td>date</td><td>Date game was played (YYYY-MM-DD)</td></tr>
+        <tr><td>venue_id</td><td>integer</td><td>Ground the game was played at (venue ID)</td></tr>
+        <tr><td>home_team_id</td><td>integer</td><td>Home team ID</td></tr>
+        <tr><td>away_team_id</td><td>integer</td><td>Away team ID</td></tr>
+        <tr><td>season_year</td><td>integer</td><td>Season year</td></tr>
+        <tr><td>afltables_game_id</td><td>integer</td><td>Game ID from AFL Tables source</td></tr>
+        <tr><td>home_score_str</td><td>character varying</td><td>Home team score as a string (e.g "10.9.69")</td></tr>
+        <tr><td>away_score_str</td><td>character varying</td><td>Away team score as a string (e.g "4.17.41")</td></tr>
+        <tr><td>home_score_goals</td><td>integer</td><td>Home team goals</td></tr>
+        <tr><td>home_score_behinds</td><td>integer</td><td>Home team behinds</td></tr>
+        <tr><td>home_score_total</td><td>integer</td><td>Home team total score</td></tr>
+        <tr><td>away_score_goals</td><td>integer</td><td>Away team goals</td></tr>
+        <tr><td>away_score_behinds</td><td>integer</td><td>Away team behinds</td></tr>
+        <tr><td>away_score_total</td><td>integer</td><td>Away team total score</td></tr>
+        <tr><td>margin</td><td>integer</td><td>Score margin as an absolute value</td></tr>
+        <tr><td>home_result</td><td>character</td><td>Result for home team (W = win, L = loss, D = draw)</td></tr>
+        <tr><td>away_result</td><td>character</td><td>Result for away team (W = win, L = loss, D = draw)</td></tr>
+        </tbody>
+    </table>
 
-  <h2>Table 3: Every venue a game occurred in (<code>venues</code>)</h2>
-  <table>
-    <thead>
-      <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>id</td><td>integer</td><td>Unique venue ID</td></tr>
-      <tr><td>name</td><td>text</td><td>Venue name</td></tr>
-      <tr><td>city</td><td>text</td><td>City or town where the venue is located</td></tr>
-      <tr><td>state</td><td>text</td><td>State the venue is located (or country if outside of Australia)</td></tr>
-      <tr><td>location</td><td>text</td><td>Latitude &amp; longitude of the stadium</td></tr>
-    </tbody>
-  </table>
+    <h2>Table 3: Every venue a game occurred in (table name: venues)</h2>
+    <table>
+        <thead>
+        <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>id</td><td>integer</td><td>Unique venue ID</td></tr>
+        <tr><td>name</td><td>text</td><td>Venue name</td></tr>
+        <tr><td>city</td><td>text</td><td>City or town where the venue is located</td></tr>
+        <tr><td>state</td><td>text</td><td>State the venue is located (or country if outside of Australia)</td></tr>
+        <tr><td>location</td><td>text</td><td>Latitude &amp; longitude of the stadium</td></tr>
+        </tbody>
+    </table>
 
-  <h2>Table 4: Every player who played a game during this time (<code>players</code>)</h2>
-  <table>
-    <thead>
-      <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>id</td><td>integer</td><td>Unique player ID</td></tr>
-      <tr><td>full_name</td><td>text</td><td>Player's full name</td></tr>
-      <tr><td>birth_date</td><td>date</td><td>Date of birth (YYYY-MM-DD)</td></tr>
-      <tr><td>height_cm</td><td>integer</td><td>Player's height in centimeters</td></tr>
-      <tr><td>weight_kg</td><td>integer</td><td>Player's weight in kilograms</td></tr>
-      <tr><td>afltables_id</td><td>integer</td><td>Player ID from AFL Tables source</td></tr>
-      <tr><td>position</td><td>character varying</td><td>Player position(s), e.g 'Midfield', 'Defender'</td></tr>
-    </tbody>
-  </table>
+    <h2>Table 4: Every player who played a game during this time (table name: players)</h2>
+    <table>
+        <thead>
+        <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>id</td><td>integer</td><td>Unique player ID</td></tr>
+        <tr><td>full_name</td><td>text</td><td>Player's full name</td></tr>
+        <tr><td>birth_date</td><td>date</td><td>Date of birth (YYYY-MM-DD)</td></tr>
+        <tr><td>height_cm</td><td>integer</td><td>Player's height in centimeters</td></tr>
+        <tr><td>weight_kg</td><td>integer</td><td>Player's weight in kilograms</td></tr>
+        <tr><td>afltables_id</td><td>integer</td><td>Player ID from AFL Tables source</td></tr>
+        <tr><td>position</td><td>character varying</td><td>Player position(s), e.g 'Midfield', 'Defender'</td></tr>
+        </tbody>
+    </table>
 
-  <h2>Table 5: Every team (<code>teams</code>)</h2>
-  <table>
-    <thead>
-      <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>id</td><td>integer</td><td>Unique team ID</td></tr>
-      <tr><td>name</td><td>text</td><td>Team name</td></tr>
-      <tr><td>short_code</td><td>text</td><td>Team abbreviation or short code</td></tr>
-      <tr><td>home_ground</td><td>integer</td><td>Venue ID for team's primary home ground</td></tr>
-      <tr><td>state</td><td>text</td><td>State where team is based</td></tr>
-    </tbody>
-  </table>
+    <h2>Table 5: Every team (table name: teams)</h2>
+    <table>
+        <thead>
+        <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>id</td><td>integer</td><td>Unique team ID</td></tr>
+        <tr><td>name</td><td>text</td><td>Team name</td></tr>
+        <tr><td>short_code</td><td>text</td><td>Team abbreviation or short code</td></tr>
+        <tr><td>home_ground</td><td>integer</td><td>Venue ID for team's primary home ground</td></tr>
+        <tr><td>state</td><td>text</td><td>State where team is based</td></tr>
+        </tbody>
+    </table>
+    </div>
+</details>
 
   <p>
     All of these tables are available on my <a href="(github page)">GitHub page</a>.
@@ -410,35 +417,30 @@ features = [
 analysis_df = team_game_features.dropna(subset=['target_win'] + features)
   </code></pre>
 
-  <p>
-    Now that everything is set up, I was able to create my model and take a look at:
-    <ul>
-      <li>The coefficients of the model</li>
-      <li>The accuracy of the model</li>
-      <li>What variables had the largest impact on the model</li>
-    </ul>
-  </p>
+<p>
+  Now that everything is set up, I was able to create my model and take a look at how well it could predict a winner. Not only this, I also wanted to understand which variables were useful, and which weren't.
+</p>
 
-  <p>
-    As part of this analysis I looked at the Area Under Curve (or AUC). The AUC measures the model's ability to rank winners higher than losers, with 0.5 being no better than random and 1.0 being perfect. This was used to understand the accuracy of the model, as well as what variables had the largest impact.
-  </p>
-  <pre><code>
+<p>
+  I used logistic regression to do this, as it is useful for binary outcomes like win/loss. Logistic regression assigns a “coefficient” to each variable (from the features dataframe we just built), which quantifies how much that variable contributes to the odds of a team winning a game. I used scaling so that all the coefficients would be on a scale from -1 to 1. What I want to see is numbers closer to the extremes: i.e., a coefficient of 1 or -1 would mean a perfect correlation.
+</p>
+
+<pre><code>
 # Create the model
-X = analysis_df[features] 
+X = analysis_df[features]
 y = analysis_df['target_win']
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-model = LogisticRegression(max_iter=1000)  
+model = LogisticRegression(max_iter=1000)
 model.fit(X_scaled, y)
 # Create coefficients
 coefs = pd.Series(model.coef_[0], index=features)
 print(coefs.sort_values())
-  </code></pre>
-  <div class="code-output">
-Output:
-Logistic Regression Coefficients:<br>
+</code></pre>
+<div class="code-output">
+Output:<br>
 avg_conceded_prev5   -0.229053<br>
 num_changes_2        -0.083847<br>
 days_since_prev      -0.030959<br>
@@ -446,21 +448,47 @@ avg_age               0.270478<br>
 avg_scored_prev5      0.272462<br>
 is_home               0.312109<br>
 dtype: float64
-  </div>
+</div>
 
-  <pre><code>
+<p>
+  As you can see, the model showed slight positive and negative relationships where we would expect them:
+</p>
+<ul>
+  <li>Playing at home is an advantage</li>
+  <li>Previous 5 games performance is relevant</li>
+  <li>Age profile of the team is relevant</li>
+  <li>Team stability (at least over the previous 2 rounds) was slightly negative</li>
+  <li>Time between games didn't seem to matter at all</li>
+</ul>
+<p>
+  I also wanted to understand the model's accuracy—i.e., what % of games did the model actually predict correctly. To do this, I used a metric called the Area Under the ROC Curve (AUC). The AUC is a more nuanced way of understanding model performance:
+</p>
+<ul>
+  <li>An AUC of <strong>0.5</strong> means the model is no better than random guessing.</li>
+  <li>An AUC of <strong>1.0</strong> is a perfect model.</li>
+  <li>Most useful models fall somewhere in between.</li>
+</ul>
+
+<pre><code>
 # Check accuracy of model
 y_pred = model.predict(X_scaled)
 acc = accuracy_score(y, y_pred)
 print(f"Accuracy: {acc:.3f} ({acc*100:.1f}%)")
-  </code></pre>
-  <div class="code-output">
+</code></pre>
+<div class="code-output">
 Output:<br>
 Accuracy: 0.617 (61.7%)
-  </div>
+</div>
 
-  <pre><code>
-# Check accuracy of model
+<p>
+  The accuracy of the model was 61.7%, basically 5–6 out of 9 tips correct each round.
+</p>
+<p>
+  Lastly, I took a look at which variables were driving the predictions. To do this, I ran the model multiple times, each time removing one feature, and observed how much the AUC dropped without it:
+</p>
+
+<pre><code>
+# Check accuracy of model (AUC for each feature dropped)
 baseline_auc = roc_auc_score(y, model.predict_proba(X_scaled)[:, 1])
 print("Baseline AUC:", baseline_auc)
 
@@ -470,8 +498,8 @@ for i, feature in enumerate(features):
     model_temp.fit(X_reduced, y)
     auc = roc_auc_score(y, model_temp.predict_proba(X_reduced)[:, 1])
     print(f"AUC without {feature}: {auc:.3f} (Drop: {baseline_auc - auc:.3f})")
-  </code></pre>
-  <div class="code-output">
+</code></pre>
+<div class="code-output">
 Output:<br>
 Baseline AUC: 0.6717989292662536<br>
 AUC without avg_scored_prev5: 0.658 (Drop: 0.014)<br>
@@ -480,11 +508,14 @@ AUC without days_since_prev: 0.672 (Drop: 0.000)<br>
 AUC without num_changes_2: 0.671 (Drop: 0.001)<br>
 AUC without avg_age: 0.659 (Drop: 0.013)<br>
 AUC without is_home: 0.650 (Drop: 0.022)
-  </div>
+</div>
 
-  <p>
-    I also tested whether including interactions between variables (e.g. combining age and home advantage) using polynomial features would improve the predictive accuracy.
-  </p>
+<p>
+  Again, this doesn't tell us much—none of the variables dramatically change the model's accuracy if removed, suggesting that each has only a modest influence on predicting the outcome on its own.
+</p>
+<p>
+  I also tested whether including interactions between variables (e.g., combining age and home advantage) using polynomial features would improve the predictive accuracy.
+</p>
   <pre><code>
 # Let's look at whether multiple factors together can predict a winner
 poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=True)
@@ -521,6 +552,9 @@ avg_conceded_prev5 avg_age             0.012748<br>
 avg_age is_home                        0.012529<br>
 dtype: float64
   </div>
+  <p>
+    What above table shows is is that after performing polynomial regression, there variables that have the largest impact do not change. I.e combining variables doesn't really change the model's performance. Checking the accuracy of the polynomial model in the same way we did above confirms this:
+  </p>
 
   <pre><code>
 # Evaluate predictive accuracy
@@ -536,7 +570,7 @@ Poly AUC: 0.6746580720024911
   </div>
 
   <p>
-    Overall, combining variables together didn't really move the dial too much (a small increase in accuracy from 61.7% to 62.3%)
+    What does this all mean? Well, combining variables together didn't really move the dial too much (a small increase in accuracy from 61.7% to 62.3%)
   </p>
   <h2>Conclusion</h2>
   <p>
