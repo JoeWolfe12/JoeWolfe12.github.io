@@ -19,7 +19,12 @@ body {
     padding: 1rem 0;
     margin-bottom: 2rem;
   }
-  
+ 
+.nav-container + .nav-container {
+  margin-top: 0;
+  margin-bottom: 2rem; 
+}  
+
 .nav-inner {
     max-width: 800px;
     margin: 0 auto;
@@ -118,9 +123,10 @@ pre, code {
   color: #e3e6eb;
   border-radius: 6px;
   padding: 0.8em 1em;
-  font-size: 0.98em;
-  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
-  line-height: 1.6; 
+  font-size: 1.05em;        
+  font-family: 'Consolas', 'Menlo', 'Monaco', monospace;
+  line-height: 1.75;    
+  white-space: pre;       
   word-break: normal;
   overflow-x: auto;
 }
