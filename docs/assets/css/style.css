@@ -139,3 +139,15 @@ pre { margin:1.25em 0; }
 .table-accordion summary::-webkit-details-marker { display:none; }
 .table-accordion summary:after       { content:" ▼"; font-size:.8em; color:#666; }
 .table-accordion[open] summary:after { content:" ▲"; color:#222; }
+
+/* breadcrumb under main nav */
+.breadcrumb {
+  font-size: .95em;
+  color: #6b7280;
+  margin: 1rem 0 .5rem 1.5rem; /* adjust left margin to taste */
+}
+.breadcrumb a {
+  color: #2563eb;
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
