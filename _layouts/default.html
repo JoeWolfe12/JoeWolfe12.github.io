@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ page.title }} – {{ site.title | default: "My Site" }}</title>
 
+  <!-- Main stylesheet -->
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-  <link rel="icon"        href="{{ '/assets/images/sabinicon.png' | relative_url }}" type="image/png">
+
+  <!-- Bigfoot pop-up footnotes  (CSS + JS) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot-default.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot.min.js"></script>
+  <script>bigfoot.default();</script>
+
+  <link rel="icon" href="{{ '/assets/images/sabinicon.png' | relative_url }}" type="image/png">
 </head>
 <body>
 
@@ -20,7 +27,13 @@
     </div>
   </nav>
 
-  <!-- PAGE CONTENT -->
+  {%- comment -%} Breadcrumb only on Footy Numbers pages {%- endcomment -%}
+  {% if page.url contains '/projects/afl-data/' %}
+    <nav class="breadcrumb">
+      <a href="/projects/">Projects</a> &nbsp;›&nbsp; Footy Numbers
+    </nav>
+  {% endif %}
+
   <main>
     {{ content }}
   </main>
