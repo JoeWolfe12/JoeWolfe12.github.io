@@ -112,3 +112,40 @@ tr:nth-child(even) {
  tr:hover {
     background-color: #f1f5f9;
   }
+
+pre, code {
+  background: #23272e;
+  color: #e3e6eb;
+  border-radius: 6px;
+  padding: 0.8em 1em;
+  font-size: 0.98em;
+  font-family: 'Fira Mono', 'Consolas', 'Monaco', 'monospace';
+}
+
+pre {
+  margin: 1.25em 0;
+  overflow-x: auto;
+}
+
+.output-block {
+  background: #f4f6fa;
+  color: #374151;
+  border-left: 4px solid #60a5fa;
+  padding: 1em;
+  border-radius: 6px;
+  margin: 1em 0;
+  font-family: 'Fira Mono', 'Consolas', 'Monaco', 'monospace';
+}
+
+.code-output {
+  background: #f4f7fa;
+  color: #203040;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+  font-size: 0.97rem;
+  border-left: 4px solid #7dd3fc;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0 2rem 0;
+  white-space: pre-line;
+  border-radius: 8px;
+  overflow-x: auto;
+}
