@@ -7,50 +7,7 @@ permalink: /thoughts/
 <section class="page-box">
   <h1>Thoughts</h1>
 
-  {% comment %} Gather all unique tags from the *thoughts* collection {% endcomment %}
-  {% assign thoughts_tags = "" | split: "" %}
-  {% for doc in site.thoughts %}
-    {% if doc.tags %}
-      {% assign thoughts_tags = thoughts_tags | concat: doc.tags %}
-    {% endif %}
-  {% endfor %}
-  {% assign thoughts_tags = thoughts_tags | uniq | sort %}
-
-  <label for="tag-filter">Filter by tag:</label>
-  <select id="tag-filter">
-    <option value="">— All —</option>
-    {% for tag in thoughts_tags %}
-      <option value="{{ tag }}">{{ tag }}</option>
-    {% endfor %}
-  </select>
-
-  <ul id="posts-list">
-    {% for post in site.thoughts %}
-      <li data-tags="{{ post.tags | join:',' }}">
-        <a href="{{ post.url }}">{{ post.title }}</a>
-        <small>{{ post.date | date: '%Y-%m-%d' }}</small>
-      </li>
-    {% endfor %}
+  <p>Ideas for future projects</p>
+  <ul>
+    <li>What would a fair distribution of resources mean? I would like to focus on Australians with the underlying theory being that people mainly talk about making things fairer if it means they get more (or at a minimum, the same), not less</li>
   </ul>
-</section>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const dropdown = document.getElementById('tag-filter');
-    const posts = document.querySelectorAll('#posts-list li');
-
-    dropdown.addEventListener('change', function () {
-      const selectedTag = this.value;
-
-      posts.forEach(post => {
-        const tags = post.getAttribute('data-tags').split(',');
-
-        if (!selectedTag || tags.includes(selectedTag)) {
-          post.style.display = '';
-        } else {
-          post.style.display = 'none';
-        }
-      });
-    });
-  });
-</script>
