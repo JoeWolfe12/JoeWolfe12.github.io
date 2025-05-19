@@ -16,6 +16,13 @@
       <a href="{{ '/thoughts/' | relative_url }}" class="{% if page.url == '/thoughts/' %}active{% endif %}">Thoughts</a>
     </div>
   </nav>
+  {% if page.url contains '/projects/afl-data/' %}
+  <nav class="nav-container" style="margin-bottom:0;">
+    <div class="nav-inner" style="font-size: 0.95em;">
+      <a href="/projects/afl-data/" class="{% if page.url == '/projects/afl-data/' %}active{% endif %}">AFL Data Home</a>
+    </div>
+  </nav>
+{% endif %}
   <main>
     {{ content }}
   </main>
