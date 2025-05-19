@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ page.title }} – {{ site.title | default: "My Site" }}</title>
 
-  <!-- main stylesheet -->
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-  <link rel="icon" href="{{ '/assets/images/sabinicon.png' | relative_url }}" type="image/png">
+  <link rel="icon"        href="{{ '/assets/images/sabinicon.png' | relative_url }}" type="image/png">
 </head>
 <body>
 
-  <!-- MAIN NAV -->
+  <!-- MAIN NAV BAR (simple, four links) -->
   <nav class="nav-container">
     <div class="nav-inner">
       <a href="{{ '/' | relative_url }}"          class="{% if page.url == '/' %}active{% endif %}">Home</a>
@@ -21,13 +20,7 @@
     </div>
   </nav>
 
-  <!-- PROJECT BANNER (only on Footy Numbers pages) -->
-  {% if page.url contains '/projects/afl-data/' %}
-  <div class="project-tag project-footy">
-    <span>Footy Numbers&nbsp;Project</span>
-  </div>
-  {% endif %}
-
+  <!-- PAGE CONTENT -->
   <main>
     {{ content }}
   </main>
