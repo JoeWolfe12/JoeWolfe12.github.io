@@ -1,0 +1,526 @@
+<div class="page-box">
+  <h1>Detailed analysis</h1>
+
+  <p>
+    At a basic level, the dataset included:
+  </p>
+  <ul>
+    <li>All matches that occurred from 2010 to round 9, 2025 inclusive</li>
+    <li>All players who played in any of these games (games they played outside of this time period were not included)</li>
+    <li>All the venues that any of these games were played at</li>
+  </ul>
+  <p>
+    If you want to see what makes up the data, then feel free to examine the tables below.
+  </p>
+  <p>
+    Please note, for all of these tables I have excluded some id fields that were used to match data (such as the id fields within the Kaggle or afltables dataset)
+  </p>
+
+  <h2>Table 1: Every individual game between 2010 and round 9, 2025 (<code>player_game_stats</code>)</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Column</th>
+        <th>Data Type</th>
+        <th>Definition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>id</td><td>integer</td><td>Unique record for player game stat entry</td></tr>
+      <tr><td>player_id</td><td>integer</td><td>Player identifier</td></tr>
+      <tr><td>game_id</td><td>integer</td><td>Game identifier</td></tr>
+      <tr><td>team_id</td><td>integer</td><td>Team the player was playing for</td></tr>
+      <tr><td>opponent_team_id</td><td>integer</td><td>Team the player was playing against</td></tr>
+      <tr><td>kicks</td><td>integer</td><td>Kicks</td></tr>
+      <tr><td>marks</td><td>integer</td><td>Marks</td></tr>
+      <tr><td>handballs</td><td>integer</td><td>Handballs</td></tr>
+      <tr><td>disposals</td><td>integer</td><td>Kicks + handballs</td></tr>
+      <tr><td>goals</td><td>integer</td><td>Goals scored</td></tr>
+      <tr><td>behinds</td><td>integer</td><td>Behinds scored</td></tr>
+      <tr><td>hit_outs</td><td>integer</td><td>Hit outs</td></tr>
+      <tr><td>tackles</td><td>integer</td><td>Tackles</td></tr>
+      <tr><td>rebounds</td><td>integer</td><td>Moving the ball from the defensive 50 into the midfield</td></tr>
+      <tr><td>inside_50</td><td>integer</td><td>Moving the ball from the midfield into the forward 50; excludes multiple entries within same chain</td></tr>
+      <tr><td>clearances</td><td>integer</td><td>First effective disposal in a chain that clears the stoppage area, or an ineffective/clanger kick that clears stoppage</td></tr>
+      <tr><td>clangers</td><td>integer</td><td>Error made by a player resulting in a negative result for their side</td></tr>
+      <tr><td>frees_for</td><td>integer</td><td>Frees awarded to player</td></tr>
+      <tr><td>frees_against</td><td>integer</td><td>Frees conceded by player</td></tr>
+      <tr><td>brownlow_votes</td><td>integer</td><td>Brownlow Medal votes, awarded by umpires</td></tr>
+      <tr><td>contested_&nbsp;possessions</td><td>integer</td><td>Possession won when the ball is in dispute (looseball-gets, hardball-gets, contested marks, etc.)</td></tr>
+      <tr><td>uncontested_possessions</td><td>integer</td><td>Possessions gained under no physical pressure</td></tr>
+      <tr><td>contested_marks</td><td>integer</td><td>A mark under physical pressure of an opponent or in a pack</td></tr>
+      <tr><td>marks_inside_50</td><td>integer</td><td>Marks taken inside forward 50</td></tr>
+      <tr><td>one_percenters</td><td>integer</td><td>Defensive effort (spoil, knock-on, smother or shepherd)</td></tr>
+      <tr><td>bounces</td><td>integer</td><td>Bounces</td></tr>
+      <tr><td>goal_assists</td><td>integer</td><td>Creating a goal by getting the ball to a teammate by any means (disposal, knock-on, ground kick, hitout, etc.)</td></tr>
+      <tr><td>time_on_ground_pct</td><td>numeric</td><td>Time on ground during a game divided by total game time (%)</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    For more information on the definitions of above, or how they are recorded, visit the <a href="https://www.afl.com.au/stats" target="_blank">AFL site</a>. The data was sourced from afltables.com, footywire.com, and the AFL dataset on Kaggle. For the purpose of this analysis I am going to assume everything was correctly recorded and that my data is correct. I conducted random spot checking of ~5 games each season to ensure confidence, and all information can be found in my <a href="(insert link)">github</a>.
+  </p>
+
+  <h2>Table 2: Game level data between 2010 and round 9, 2025 (<code>games</code>)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Column</th><th>Data Type</th><th>Definition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>round</td><td>text</td><td>Round label (e.g R3, QF)</td></tr>
+      <tr><td>game_date</td><td>date</td><td>Date game was played (YYYY-MM-DD)</td></tr>
+      <tr><td>venue_id</td><td>integer</td><td>Ground the game was played at (venue ID)</td></tr>
+      <tr><td>home_team_id</td><td>integer</td><td>Home team ID</td></tr>
+      <tr><td>away_team_id</td><td>integer</td><td>Away team ID</td></tr>
+      <tr><td>season_year</td><td>integer</td><td>Season year</td></tr>
+      <tr><td>afltables_game_id</td><td>integer</td><td>Game ID from AFL Tables source</td></tr>
+      <tr><td>home_score_str</td><td>character varying</td><td>Home team score as a string (e.g "10.9.69")</td></tr>
+      <tr><td>away_score_str</td><td>character varying</td><td>Away team score as a string (e.g "4.17.41")</td></tr>
+      <tr><td>home_score_goals</td><td>integer</td><td>Home team goals</td></tr>
+      <tr><td>home_score_behinds</td><td>integer</td><td>Home team behinds</td></tr>
+      <tr><td>home_score_total</td><td>integer</td><td>Home team total score</td></tr>
+      <tr><td>away_score_goals</td><td>integer</td><td>Away team goals</td></tr>
+      <tr><td>away_score_behinds</td><td>integer</td><td>Away team behinds</td></tr>
+      <tr><td>away_score_total</td><td>integer</td><td>Away team total score</td></tr>
+      <tr><td>margin</td><td>integer</td><td>Score margin as an absolute value</td></tr>
+      <tr><td>home_result</td><td>character</td><td>Result for home team (W = win, L = loss, D = draw)</td></tr>
+      <tr><td>away_result</td><td>character</td><td>Result for away team (W = win, L = loss, D = draw)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Table 3: Every venue a game occurred in (<code>venues</code>)</h2>
+  <table>
+    <thead>
+      <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>id</td><td>integer</td><td>Unique venue ID</td></tr>
+      <tr><td>name</td><td>text</td><td>Venue name</td></tr>
+      <tr><td>city</td><td>text</td><td>City or town where the venue is located</td></tr>
+      <tr><td>state</td><td>text</td><td>State the venue is located (or country if outside of Australia)</td></tr>
+      <tr><td>location</td><td>text</td><td>Latitude &amp; longitude of the stadium</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Table 4: Every player who played a game during this time (<code>players</code>)</h2>
+  <table>
+    <thead>
+      <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>id</td><td>integer</td><td>Unique player ID</td></tr>
+      <tr><td>full_name</td><td>text</td><td>Player's full name</td></tr>
+      <tr><td>birth_date</td><td>date</td><td>Date of birth (YYYY-MM-DD)</td></tr>
+      <tr><td>height_cm</td><td>integer</td><td>Player's height in centimeters</td></tr>
+      <tr><td>weight_kg</td><td>integer</td><td>Player's weight in kilograms</td></tr>
+      <tr><td>afltables_id</td><td>integer</td><td>Player ID from AFL Tables source</td></tr>
+      <tr><td>position</td><td>character varying</td><td>Player position(s), e.g 'Midfield', 'Defender'</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Table 5: Every team (<code>teams</code>)</h2>
+  <table>
+    <thead>
+      <tr><th>Column</th><th>Data Type</th><th>Definition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>id</td><td>integer</td><td>Unique team ID</td></tr>
+      <tr><td>name</td><td>text</td><td>Team name</td></tr>
+      <tr><td>short_code</td><td>text</td><td>Team abbreviation or short code</td></tr>
+      <tr><td>home_ground</td><td>integer</td><td>Venue ID for team's primary home ground</td></tr>
+      <tr><td>state</td><td>text</td><td>State where team is based</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    All of these tables are available on my <a href="(github page)">GitHub page</a>.
+  </p>
+
+  <h2>Building the Dataframe and Features</h2>
+
+  <p>
+    With the data prepared, I began by building an initial dataframe containing all games:
+  </p>
+  <pre><code>
+engine = create_engine(f"postgresql+psycopg2://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}")
+df_games = pd.read_sql("SELECT * FROM games", engine)
+  </code></pre>
+
+  <p>
+    I also built a helper function to sort rounds (this was done after noticing that the format I had the rounds in meant that sorting them meant R10 following R1 instead of R2):
+  </p>
+  <pre><code>
+# Helper function to sort rounds
+def get_round_order(row):
+    # Match regular rounds: 'R1', 'R23', etc.
+    match = re.match(r'R(\d+)$', row['round'])
+    if match:
+        return int(match.group(1))
+    # Finals rounds mapping (AFL convention)
+    finals_order = {
+        'REF': 100,  # Elimination Final (week 1)
+        'RQF': 101,  # Qualifying Final (week 1)
+        'RSF': 102,  # Semi Final (week 2)
+        'RPF': 103,  # Preliminary Final (week 3)
+        'RGF': 104,  # Grand Final (week 4)
+    }
+    code = row['round'][1:] 
+    return finals_order.get(code, 999)  # Unknown finals get 999
+  </code></pre>
+
+  <p>
+    The first variable I wanted to look at is player movement. In order to calculate this I initially only looked at changes across 1 round. I then built out changes of 2 and 3 rounds, and after analysis on each of the variables I ended up only using changes over 2 rounds. This was because these variables were so highly correlated (multicollinearity) that including more than one would make it difficult to interpret the effect of each one individually.
+  </p>
+  <pre><code>
+query_movement ="""
+SELECT 
+    pgs.game_id, 
+    g.season_year, 
+    g.round, 
+    pgs.team_id, 
+    pgs.player_id
+FROM player_game_stats pgs
+JOIN games g ON pgs.game_id = g.id
+ORDER BY g.season_year, g.round, pgs.team_id
+"""
+df_players = pd.read_sql(query_movement, engine)
+
+players_per_team_round = (
+    df_players
+    .groupby(['season_year', 'team_id', 'round'])
+    .agg({'player_id': lambda x: set(x)})
+    .reset_index()
+    .sort_values(['season_year', 'team_id', 'round'])
+)
+
+# Use the helper function to sort the rounds
+players_per_team_round['round_order'] = players_per_team_round.apply(get_round_order, axis=1)
+players_per_team_round = players_per_team_round.sort_values(
+    ['season_year', 'team_id', 'round_order']
+).reset_index(drop=True)
+
+# Once we have the dataframe, now we need to sort it and calculate how many players played together in previous round, plus previous 2 & 3 rounds
+players_per_team_round['prev_players_1'] = (
+    players_per_team_round.groupby(['season_year', 'team_id'])['player_id'].shift(1)
+)
+players_per_team_round['prev_players_2'] = (
+    players_per_team_round.groupby(['season_year', 'team_id'])['player_id'].shift(2)
+)
+players_per_team_round['prev_players_3'] = (
+    players_per_team_round.groupby(['season_year', 'team_id'])['player_id'].shift(3)
+)
+
+# Functions to calculate number of changes vs previous 1, 2, 3 rounds
+def num_changes_vs_prev(row):
+    if pd.isna(row['prev_players_1']):
+        return np.nan
+    return len(row['player_id'].symmetric_difference(row['prev_players_1']))
+
+def num_changes_vs_prev2(row):
+    if pd.isna(row['prev_players_1']) or pd.isna(row['prev_players_2']):
+        return np.nan
+    prev_union = row['prev_players_1'].union(row['prev_players_2'])
+    return len(row['player_id'].symmetric_difference(prev_union))
+
+def num_changes_vs_prev3(row):
+    if pd.isna(row['prev_players_1']) or pd.isna(row['prev_players_2']) or pd.isna(row['prev_players_3']):
+        return np.nan
+    prev_union = row['prev_players_1'].union(row['prev_players_2']).union(row['prev_players_3'])
+    return len(row['player_id'].symmetric_difference(prev_union))
+
+players_per_team_round['num_changes_1'] = players_per_team_round.apply(num_changes_vs_prev, axis=1)
+players_per_team_round['num_changes_2'] = players_per_team_round.apply(num_changes_vs_prev2, axis=1)
+players_per_team_round['num_changes_3'] = players_per_team_round.apply(num_changes_vs_prev3, axis=1)
+  </code></pre>
+
+  <p>
+    I also wanted to look at different variables relating to team form, as well as whether or not having more, or less, rest between games made a difference. In order to do this I built out a dataframe to look at average scores over a 5 game period, as well as the amount of time between games:
+  </p>
+  <pre><code>
+# calculate days between games as well as rolling averages of previous 5 games
+df_games['game_date'] = pd.to_datetime(df_games['game_date'])
+
+df_home = df_games[['id', 'season_year', 'round', 'game_date', 'home_team_id', 'home_score_total', 'away_score_total']].copy()
+df_home = df_home.rename(columns={
+    'home_team_id': 'team_id',
+    'home_score_total': 'score_scored',
+    'away_score_total': 'score_conceded'
+})
+
+df_away = df_games[['id', 'season_year', 'round', 'game_date', 'away_team_id', 'away_score_total', 'home_score_total']].copy()
+df_away = df_away.rename(columns={
+    'away_team_id': 'team_id',
+    'away_score_total': 'score_scored',
+    'home_score_total': 'score_conceded'
+})
+
+df_team_games = pd.concat([df_home, df_away], ignore_index=True)
+df_team_games = df_team_games.sort_values(['team_id', 'game_date']).reset_index(drop=True)
+
+# calculate average score and margin based on rolling average of previous 5 games, minimum 1 game and only including games in season
+df_team_games['avg_scored_prev5'] = (
+    df_team_games.groupby(['team_id', 'season_year'])['score_scored']
+    .transform(lambda x: x.shift(1).rolling(5, min_periods=1).mean())
+)
+
+df_team_games['avg_conceded_prev5'] = (
+    df_team_games.groupby(['team_id', 'season_year'])['score_conceded']
+    .transform(lambda x: x.shift(1).rolling(5, min_periods=1).mean())
+)
+
+df_team_games['margin'] = df_team_games['score_scored'] - df_team_games['score_conceded']
+
+df_team_games['avg_margin_prev5'] = (
+    df_team_games.groupby(['team_id', 'season_year'])['margin']
+    .transform(lambda x: x.shift(1).rolling(5, min_periods=1).mean())
+)
+
+# calculate days since previous game, only including games in season
+df_team_games['days_since_prev'] = (
+    df_team_games.groupby(['team_id', 'season_year'])['game_date']
+    .diff()
+    .dt.days
+)
+  </code></pre>
+
+  <p>
+    Lastly, I also took a look at the average age of players within a game:
+  </p>
+  <pre><code>
+# Calculate the average team age
+query_age = """
+SELECT 
+    pgs.game_id, 
+    pgs.team_id, 
+    pgs.player_id, 
+    p.birth_date, 
+    g.game_date
+FROM player_game_stats pgs
+JOIN games g ON pgs.game_id = g.id
+JOIN players p ON pgs.player_id = p.id
+"""
+df_players_age = pd.read_sql(query_age, engine)
+
+df_players_age['age'] = (
+    (pd.to_datetime(df_players_age['game_date']) - pd.to_datetime(df_players_age['birth_date'])).dt.days / 365.25
+)
+
+avg_age_per_team_game = (
+    df_players_age
+    .groupby(['game_id', 'team_id'])['age']
+    .mean()
+    .reset_index()
+    .rename(columns={'age': 'avg_age', 'game_id': 'id'}) 
+)
+  </code></pre>
+
+  <p>
+    Once I had all of my data together, I merged the dataframes above to create a single dataframe with all the features:
+  </p>
+  <pre><code>
+# merge everything together into single dataframe
+team_game_features = (
+    pd.merge(
+        df_team_games,
+        players_per_team_round[['season_year', 'team_id', 'round', 'num_changes_1', 'num_changes_2', 'num_changes_3']],
+        on=['season_year', 'team_id', 'round'],
+        how='left'
+    )
+    .merge(
+        avg_age_per_team_game,
+        on=['id', 'team_id'],
+        how='left'
+    )
+)
+  </code></pre>
+
+  <p>
+    In order to better analyse team level data I also needed to split out each game into the home team, and the away team. This allows me to look at each team’s performance individually, regardless of whether they played at home or away.
+  </p>
+  <pre><code>
+# Get win/loss results
+
+df_home_result = df_games[['id', 'season_year', 'round', 'home_team_id', 'home_result']]
+df_home_result = df_home_result.rename(columns={
+    'id': 'game_id',
+    'home_team_id': 'team_id',
+    'home_result': 'result'
+})
+df_home_result['home_or_away'] = 'home'
+
+df_away_result = df_games[['id', 'season_year', 'round', 'away_team_id', 'away_result']]
+df_away_result = df_away_result.rename(columns={
+    'id': 'game_id',
+    'away_team_id': 'team_id',
+    'away_result': 'result'
+})
+df_away_result['home_or_away'] = 'away'
+
+df_results = pd.concat([df_home_result, df_away_result], ignore_index=True)
+  </code></pre>
+
+  <p>
+    Now I was almost ready to start looking at the data, but first I needed to merge the results dataframe into my features dataframe, then add in a new column so that I could understand home ground advantage.
+  </p>
+  <pre><code>
+# Merge results with what we want to analyse on
+team_game_features = team_game_features.merge(
+    df_results[['game_id', 'team_id', 'result', 'home_or_away']],
+    left_on=['id', 'team_id'],
+    right_on=['game_id', 'team_id'],
+    how='left'
+).drop(columns=['game_id'])
+
+team_game_features['target_win'] = team_game_features['result'].map({'W': 1, 'L': 0, 'D': np.nan})
+
+# Add home ground advantage
+team_game_features['is_home'] = (team_game_features['home_or_away'] == 'home').astype(int)
+
+# Prepare features and target
+features = [
+    'avg_scored_prev5', 
+    'avg_conceded_prev5', 
+    'days_since_prev', 
+    'num_changes_2',
+    'avg_age',
+    'is_home'
+]
+analysis_df = team_game_features.dropna(subset=['target_win'] + features)
+  </code></pre>
+
+  <p>
+    Now that everything is set up, I was able to create my model and take a look at:
+    <ul>
+      <li>The coefficients of the model</li>
+      <li>The accuracy of the model</li>
+      <li>What variables had the largest impact on the model</li>
+    </ul>
+  </p>
+
+  <p>
+    As part of this analysis I looked at the Area Under Curve (or AUC). The AUC measures the model's ability to rank winners higher than losers, with 0.5 being no better than random and 1.0 being perfect. This was used to understand the accuracy of the model, as well as what variables had the largest impact.
+  </p>
+  <pre><code>
+# Create the model
+X = analysis_df[features] 
+y = analysis_df['target_win']
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+model = LogisticRegression(max_iter=1000)  
+model.fit(X_scaled, y)
+# Create coefficients
+coefs = pd.Series(model.coef_[0], index=features)
+print(coefs.sort_values())
+  </code></pre>
+  <div class="code-output">
+Output:
+Logistic Regression Coefficients:<br>
+avg_conceded_prev5   -0.229053<br>
+num_changes_2        -0.083847<br>
+days_since_prev      -0.030959<br>
+avg_age               0.270478<br>
+avg_scored_prev5      0.272462<br>
+is_home               0.312109<br>
+dtype: float64
+  </div>
+
+  <pre><code>
+# Check accuracy of model
+y_pred = model.predict(X_scaled)
+acc = accuracy_score(y, y_pred)
+print(f"Accuracy: {acc:.3f} ({acc*100:.1f}%)")
+  </code></pre>
+  <div class="code-output">
+Output:<br>
+Accuracy: 0.617 (61.7%)
+  </div>
+
+  <pre><code>
+# Check accuracy of model
+baseline_auc = roc_auc_score(y, model.predict_proba(X_scaled)[:, 1])
+print("Baseline AUC:", baseline_auc)
+
+for i, feature in enumerate(features):
+    X_reduced = np.delete(X_scaled, i, axis=1)
+    model_temp = LogisticRegression(max_iter=1000)
+    model_temp.fit(X_reduced, y)
+    auc = roc_auc_score(y, model_temp.predict_proba(X_reduced)[:, 1])
+    print(f"AUC without {feature}: {auc:.3f} (Drop: {baseline_auc - auc:.3f})")
+  </code></pre>
+  <div class="code-output">
+Output:<br>
+Baseline AUC: 0.6717989292662536<br>
+AUC without avg_scored_prev5: 0.658 (Drop: 0.014)<br>
+AUC without avg_conceded_prev5: 0.665 (Drop: 0.007)<br>
+AUC without days_since_prev: 0.672 (Drop: 0.000)<br>
+AUC without num_changes_2: 0.671 (Drop: 0.001)<br>
+AUC without avg_age: 0.659 (Drop: 0.013)<br>
+AUC without is_home: 0.650 (Drop: 0.022)
+  </div>
+
+  <p>
+    I also tested whether including interactions between variables (e.g. combining age and home advantage) using polynomial features would improve the predictive accuracy.
+  </p>
+  <pre><code>
+# Let's look at whether multiple factors together can predict a winner
+poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=True)
+X_poly = poly.fit_transform(X_scaled)
+feature_names = poly.get_feature_names_out(features)
+model_poly = LogisticRegression(max_iter=1000)
+model_poly.fit(X_poly, y)
+
+coefs_poly = pd.Series(model_poly.coef_[0], index=feature_names)
+# Show the biggest absolute coefficients (most "important" effects)
+print(coefs_poly.abs().sort_values(ascending=False).head(20))
+  </code></pre>
+  <div class="code-output">
+Output:<br>
+is_home                                0.313096<br>
+avg_scored_prev5                       0.280495<br>
+avg_age                                0.268837<br>
+avg_conceded_prev5                     0.209431<br>
+num_changes_2                          0.084217<br>
+avg_scored_prev5 is_home               0.064832<br>
+avg_scored_prev5 avg_conceded_prev5    0.049802<br>
+num_changes_2 is_home                  0.039212<br>
+days_since_prev is_home                0.037942<br>
+days_since_prev avg_age                0.029295<br>
+avg_conceded_prev5 is_home             0.027139<br>
+num_changes_2 avg_age                  0.024612<br>
+days_since_prev                        0.021512<br>
+avg_scored_prev5 days_since_prev       0.019434<br>
+avg_conceded_prev5 num_changes_2       0.016678<br>
+avg_conceded_prev5 days_since_prev     0.016134<br>
+days_since_prev num_changes_2          0.015158<br>
+avg_scored_prev5 num_changes_2         0.013681<br>
+avg_conceded_prev5 avg_age             0.012748<br>
+avg_age is_home                        0.012529<br>
+dtype: float64
+  </div>
+
+  <pre><code>
+# Evaluate predictive accuracy
+y_pred_poly = model_poly.predict(X_poly)
+y_prob_poly = model_poly.predict_proba(X_poly)[:,1]
+print("Poly Accuracy:", accuracy_score(y, y_pred_poly))
+print("Poly AUC:", roc_auc_score(y, y_prob_poly))
+  </code></pre>
+  <div class="code-output">
+Output:<br>
+Poly Accuracy: 0.6233535065859737<br>
+Poly AUC: 0.6746580720024911
+  </div>
+
+  <p>
+    Overall, combining variables together didn't really move the dial too much (a small increase in accuracy from 61.7% to 62.3%)
+  </p>
+  <h2>Conclusion</h2>
+  <p>
+    Just picking the home team is correct 56% of the time, so if you want a model that is <em>slightly</em> better than just picking the team that is playing at home, this is the model for you.
+  </p>
+</div>

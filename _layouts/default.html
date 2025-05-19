@@ -12,7 +12,7 @@
     <div class="nav-inner">
       <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}">Home</a>
       <a href="{{ '/about/' | relative_url }}" class="{% if page.url == '/about/' %}active{% endif %}">About</a>
-      <a href="{{ '/projects/' | relative_url }}" class="{% if page.url == '/projects/' %}active{% endif %}">Projects</a>
+      <a href="{{ '/projects/' | relative_url }}" class="{% if page.url contains '/projects/' %}active{% endif %}">Projects</a>
       <a href="{{ '/thoughts/' | relative_url }}" class="{% if page.url == '/thoughts/' %}active{% endif %}">Thoughts</a>
     </div>
   </nav>
