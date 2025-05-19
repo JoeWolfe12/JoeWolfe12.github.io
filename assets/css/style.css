@@ -90,19 +90,37 @@ body {
 }
 
 /* Sub-nav links */
+..nav-item.projects .nav-sub-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  min-width: 120px;
+  width: 120px;           /* Fix width to match main nav */
+  z-index: 10;
+  padding: 0.2rem 0;
+  align-items: center;    /* Center contents */
+}
+
 .nav-sub-menu a {
   background-color: #e5e7eb;
   color: #111827;
-  text-align: left;
-  padding: 0.7rem 1rem;
+  text-align: center;
+  padding: 0.5rem 1rem;
   text-decoration: none;
   border-radius: 6px;
   font-weight: 500;
   margin: 0.15rem 0;
-  font-size: 0.97em;
+  font-size: 1.1em;
   transition: background 0.2s;
-  width: 100%;
+  width: 120px;          /* Match main nav button width */
   box-sizing: border-box;
+  display: block;
 }
 
 .nav-sub-menu a.active,
