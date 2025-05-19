@@ -20,42 +20,10 @@
     <section class="page-box">
   <h1>Thoughts</h1>
 
-  
-  
-  
-  
-
-  <label for="tag-filter">Filter by tag:</label>
-  <select id="tag-filter">
-    <option value="">— All —</option>
-    
-  </select>
-
-  <ul id="posts-list">
-    
+  <p>Ideas for future projects</p>
+  <ul>
+    <li>What would a fair distribution of resources mean? I would like to focus on Australians with the underlying theory being that people mainly talk about making things fairer if it means they get more (or at a minimum, the same), not less</li>
   </ul>
-</section>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const dropdown = document.getElementById('tag-filter');
-    const posts = document.querySelectorAll('#posts-list li');
-
-    dropdown.addEventListener('change', function () {
-      const selectedTag = this.value;
-
-      posts.forEach(post => {
-        const tags = post.getAttribute('data-tags').split(',');
-
-        if (!selectedTag || tags.includes(selectedTag)) {
-          post.style.display = '';
-        } else {
-          post.style.display = 'none';
-        }
-      });
-    });
-  });
-</script>
   </main>
   <script src="/assets/js/main.js"></script>
 </body>

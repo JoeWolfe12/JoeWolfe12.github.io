@@ -1,4 +1,23 @@
-<div class="page-box">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple prediction model – El Punce</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" href="/assets/images/sabinicon.png" type="image/png">
+</head>
+<body>
+  <nav class="nav-container">
+    <div class="nav-inner">
+      <a href="/" class="">Home</a>
+      <a href="/about/" class="">About</a>
+      <a href="/projects/" class="active">Projects</a>
+      <a href="/thoughts/" class="">Thoughts</a>
+    </div>
+  </nav>
+  <main>
+    <div class="page-box">
   <h1>What can best predict the winner of a game of footy?</h1>
   <p>This article is the first in a series where I will try and build out a model to predict games of footy.</p>
   <p>
@@ -83,3 +102,8 @@
     <li id="fn4">Please go <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">here</a> for the detailed data <a href="#fnref4">↩</a></li>
     <li id="fn5">The smaller the number, the lower the impact. The closer to -1 or 1, the higher the impact with -1 associated with defeat and 1 with victory. <a href="#fnref5">↩</a></li>
     <li id="fn6">I did look at team stability over 1, 2, 3 and up to 9 rounds and ended up sticking with 2 rounds as the best indicator. This was partially due to the high correlation between 1, 2 & 3 rounds and also because looking at 4, 5, 6+ rounds worth of stability means the first 4, 5, 6+ rounds of data is invalid for all attributes. I will conduct further analysis on whether a hybrid model improves accuracy, but for now I will leave it off. I didn't look at continuity from the previous year's last game and the first round of the new year
+
+  </main>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
