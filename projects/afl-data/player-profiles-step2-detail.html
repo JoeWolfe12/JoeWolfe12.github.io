@@ -1,65 +1,132 @@
 ---
 layout: default
-title: Detailed analysis
-permalink: /projects/afl-data/player-profile-detail
+title: Detailed Player Based Model Analysis
+permalink: /projects/afl-data//player-profile-step2-detail
 ---
 <div class="page-box">
+  <h1>Detailed Player-Based Model Analysis</h1>
+  <p>
+    This is the detailed analysis on how I built out a model to predict the winner of a footy game through player impact scores.
+  </p>
+  <p>
+    For information on the exact tables, please refer to <a href="https://elpunce.com/projects/afl-data/model-step1-detail.html" target="_blank" rel="noopener">this page</a> or the <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">github repo</a>.
+  </p>
+  <p>
+    It's hard to measure individual player contributions in footy, and unfortunately many metrics are not publicly available. For what is publicly available, I was reliant on fan made websites that store game data. The AFL website itself is built in a way that does not allow access to any of the actual tables of data: I can only assume this is to soft lock this information behind the paywall of champion data.
+  </p>
+  <p>
+    The impact of this is that it's much harder for an amateur to put together a model, or analyse player stats like it is for a sport like cricket (statsguru being a prime example). There are some numbers I didn't have access to that could have made a difference to the overall model, so without dwelling too much on it, below are some of the metrics that were not captured:
+  </p>
+  <ul>
+    <li>Metres gained</li>
+    <li>Position on field when different actions (disposals, tackles, marks) occurred</li>
+    <li>Contests won and participated in</li>
+    <li>Effectiveness and distance of kicks and handballs</li>
+    <li>Position played during the game (not just the position the player is listed at)</li>
+  </ul>
+  <p>
+    Where I think this had the biggest impact was in being able to evaluate the performance of defenders. Not being able to pick up how many times a defender was beaten in a true one on one, or how effectively they were able to use the ball amongst other things means that the model will just to have some limitations.
+  </p>
+  <p>
+    In saying that, we did have plenty of data to work through.
+  </p>
 
-      <h1>Detailed Player Impact Model Analysis</h1>
-      <p>
-        This is the detailed analysis on how I built out a model to predict the winner of a footy game through player impact scores.<br>
-        For information on the exact tables, see <a href="/projects/afl-data/model-step1-detail.html">the step 1 detailed model</a> or <a href="https://github.com/JoeWolfe12/AFL-data-analysis">the github repo</a>.
-      </p>
+  <h2>Step 1: Loading Data and Creating Helper Functions</h2>
+  <p>
+    To begin with, I imported the libraries needed to manipulate and analyse the data, then created a dataframes to hold all the player and games data:
+  </p>
 
-      <p>
-        It's hard to measure individual player contributions in footy, and unfortunately many metrics are not publicly available. For what is publicly available, I was reliant on fan-made websites that store game data. The AFL website itself is built in a way that does not allow access to any of the actual tables of data: I can only assume this is to soft lock this information behind the paywall of champion data.
-      </p>
+  <details class="table-accordion">
+    <summary>Python: Load data</summary>
+    <pre>
+        from dotenv import load_dotenv
+        import os
+        import pandas as pd
+        from sqlalchemy import create_engine
+        from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+        from sklearn.model_selection import train_test_split
+        from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+        from sklearn.metrics import accuracy_score, roc_auc_score, confusion_matrix
+        import numpy as np
+        import re
+    </pre>
+  </details>
 
-      <p>
-        The impact of this is that it's much harder for an amateur to put together a model, or analyse player stats like it is for a sport like cricket (statsguru being a prime example). There are some numbers I didn't have access to that could have made a difference to the overall model, so without dwelling too much on it, below are some of the metrics that were not captured:
-      </p>
-      <ul>
-        <li>Metres gained</li>
-        <li>Position on field when different actions (disposals, tackles, marks) occurred</li>
-        <li>Contests won and participated in</li>
-        <li>Effectiveness and distance of kicks and handballs</li>
-        <li>Position played during the game (not just the position the player is listed at)</li>
-      </ul>
-
-      <p>
-        Where I think this had the biggest impact was in being able to evaluate the performance of defenders. Not being able to pick up how many times a defender was beaten in a true one on one, or how effectively they were able to use the ball amongst other things means that the model will just to have some limitations.<br>
-        In saying that, we did have plenty of data to work through.
-      </p>
-
-      <details class="table-accordion">
-        <summary>Python: Imports and Data Load</summary>
-        <pre>
-# Import libraries and create initial DataFrames
-import pandas as pd
-import numpy as np
-import re
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, roc_auc_score, confusion_matrix
-        </pre>
-      </details>
-
-      <details class="table-accordion">
-        <summary>Python: Helper Functions</summary>
-        <pre>
-# Helper function to sort rounds
+  <p>
+    I also created some helper functions to assist throughout the analysis. Firstly, I reused the helper function used in my initial analysis to sort rounds:
+  </p>
+  <details class="table-accordion">
+    <summary>Python: Helper function to sort rounds</summary>
+    <pre>
+# helper function to sort rounds
 def get_round_order(row):
+    # Handle missing/null values
     if not row['round'] or pd.isnull(row['round']):
         return None
+    # Match regular rounds: 'R1', 'R23', etc.
     match = re.match(r'R(\d+)$', row['round'])
     if match:
         return int(match.group(1))
-    finals_order = {'REF': 100, 'RQF': 101, 'RSF': 102, 'RPF': 103, 'RGF': 104}
-    code = row['round'][1:]
+    # Finals 
+    finals_order = {
+        'REF': 100,  # Elimination Final (week 1)
+        'RQF': 101,  # Qualifying Final (week 1)
+        'RSF': 102,  # Semi Final (week 2)
+        'RPF': 103,  # Preliminary Final (week 3)
+        'RGF': 104,  # Grand Final (week 4),
+    }
+    code = row['round'][1:]  # Removes leading "R"
     return finals_order.get(code, 999)
+    </pre>
+  </details>
 
-# Helper: assign position group
+  <p>
+    I also created a helper function to sort players into more granular roles. After analysis on how many players fit into each role type, I ended up making two changes to manipulate the roles that I already had, going from:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Original Role</th>
+        <th>New Role(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>forward</td>
+        <td>forward</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>midfield/forward</td>
+      </tr>
+      <tr>
+        <td>midfield</td>
+        <td>midfield</td>
+      </tr>
+      <tr>
+        <td>ruck</td>
+        <td>ruck</td>
+      </tr>
+      <tr>
+        <td rowspan="2">defender</td>
+        <td>tall_defender</td>
+      </tr>
+      <tr>
+        <td>small_defender</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The reasons for doing this were:
+  </p>
+  <ul>
+    <li>Many players play across midfield/forward. When analysing these players as pure midfielders their goals and posessions distorted the model compared to more pure forwards and midfielders</li>
+    <li>Defenders were split into tall and small to reflect the different role they play. The model is probably weakest when looking at defenders and this change at least meant that we could focus on what different types of defenders look like. The 195cm cut off was used after experimenting at 190cm and 195cm. Because the modern game has seen some height inflation over time (apologies to Eric Bana<sup><a href="#footnote-bana">1</a></sup>), 195cm was chosen as more appropriate.</li>
+  </ul>
+
+  <details class="table-accordion">
+    <summary>Python: Assign players to role groups</summary>
+    <pre>
 h_cutoff = 195
 def assign_position_group(row):
     pos = row['position'].lower().replace(' ', '') if row['position'] else ''
@@ -69,12 +136,20 @@ def assign_position_group(row):
         elif row['height_cm'] is not None and row['height_cm'] < 195:
             return ['small_defender']
         else:
-            return ['small_defender']
+            return ['small_defender']  # fallback if height unknown
     if pos == 'midfield,forward':
         return ['midfield,forward']
     return pos.split(',') if pos else []
+    </pre>
+  </details>
 
-# Win/loss assignment
+  <p>
+    I also had a helper function to assist in sorting out wins and losses so the data could be interpreted:
+  </p>
+  <details class="table-accordion">
+    <summary>Python: Helper for win/loss per player game</summary>
+    <pre>
+# Add in win/loss helper function
 def get_team_win(row):
     if row['team_id'] == row['home_team_id']:
         return 1 if row['home_result'] == 'W' else 0
@@ -82,17 +157,28 @@ def get_team_win(row):
         return 1 if row['away_result'] == 'W' else 0
     else:
         return None
-        </pre>
-      </details>
+    </pre>
+  </details>
 
-      <details class="table-accordion">
-        <summary>Python: Load &amp; Clean Data</summary>
-        <pre>
+  <h2>Step 2: Loading and Cleaning Data</h2>
+  <p>
+    Now that I had my helper functions, I loaded in the table data and cleaned it for positions, as well as adding in some extra columns to look at:
+  </p>
+  <ul>
+    <li>Kick to disposal ratio</li>
+    <li>Contested disposal ratio</li>
+  </ul>
+
+  <details class="table-accordion">
+    <summary>Python: Load and process player/game stats</summary>
+    <pre>
+# Load in the tables
 players = pd.read_sql('SELECT id as player_id, full_name, height_cm, position FROM players', engine)
 player_game_stats = pd.read_sql('SELECT * FROM player_game_stats', engine)
 games = pd.read_sql('SELECT id AS game_id, season_year, round, game_date, home_team_id, away_team_id, home_result, away_result FROM games', engine)
 games['round_number'] = games.apply(get_round_order, axis=1)
 
+# Clean position data, with midfield,forward being its own group
 def custom_position_split(pos_str):
     if not pos_str or pd.isnull(pos_str):
         return []
@@ -105,265 +191,1042 @@ players['position_group'] = players.apply(assign_position_group, axis=1)
 players_exploded = players.explode('position_group')
 players_exploded = players_exploded[players_exploded['position_group'] != '']
 
+# Merge tables to get results
 pgs = player_game_stats.merge(
     games[['game_id', 'home_team_id', 'away_team_id', 'home_result', 'away_result']],
     on='game_id', how='left'
 )
+# Add in the positions from the position data above
 pgs = pgs.merge(
     players_exploded[['player_id', 'position_group']],
     on='player_id', how='left'
 )
 
+# Add in a couple ratios: % of disposals that are kicks, % of disposals that are contested
 pgs['pct_contested'] = pgs['contested_possessions'] / pgs['disposals']
 pgs['pct_kicks'] = pgs['kicks'] / pgs['disposals']
+
+# Avoid any 0 disposal games
 pgs.loc[pgs['disposals'] == 0, 'pct_contested'] = None
 pgs.loc[pgs['disposals'] == 0, 'pct_kicks'] = None
 
+# Create the stats column
 stat_cols = [
     'kicks', 'marks', 'handballs', 'goals', 'behinds', 'hit_outs', 'tackles',
     'rebounds', 'inside_50', 'clearances', 'clangers', 'frees_for', 'frees_against',
     'contested_possessions', 'uncontested_possessions', 'contested_marks', 'marks_inside_50',
     'one_percenters', 'bounces', 'goal_assists', 'pct_contested', 'pct_kicks'
 ]
-        </pre>
-      </details>
+    </pre>
+  </details>
 
-      <p>Before building the main model, I quickly checked the raw correlation of each variable to winning. This isn't enough for good prediction but sanity checks variable relevance.</p>
-      <details class="table-accordion">
-        <summary>Python: Variable Correlation vs Winning</summary>
-        <pre>
+  <h2>Step 3: Correlation Analysis for Each Role</h2>
+  <p>
+    Now that this was done, I was ready to create the dataframe that I could use to start building out the model. The first thing I did was take a quick look at the correlation efficient between each individual variable and whether or not the team won. This data isn't massively useful as this correlation efficient doesn't take into account confounding vairables - i.e the other stats:
+  </p>
+  <details class="table-accordion">
+    <summary>Python: Correlation analysis</summary>
+    <pre>
 # Build out a dataframe
 positions = pgs['position_group'].unique()
 correlation_results = []
+
 for pos in positions:
     pgs_pos = pgs[pgs['position_group'] == pos]
-    if len(pgs_pos) < 30: continue  
+    if len(pgs_pos) < 30:
+        continue  
     for stat in stat_cols:
         if stat in pgs_pos.columns:
             vals = pgs_pos[stat].dropna()
             if len(vals.unique()) > 1:
                 corr = pgs_pos[stat].corr(pgs_pos['won'])
                 correlation_results.append({'position_group': pos, 'stat': stat, 'correlation': corr, 'n_games': len(pgs_pos)})
+
 cor_df = pd.DataFrame(correlation_results)
 cor_df = cor_df.sort_values(['position_group', 'correlation'], ascending=[True, False])
-display(cor_df)
-        </pre>
-        <div class="code-output">
-Output: <br>
-[Table showing correlations, as previously listed in your document.]
-        </div>
-      </details>
 
-      <h2>Logistic Regression by Role</h2>
-      <p>
-        Next: I used logistic regression for each role. This allowed me to see what stats had the biggest impact on winning for a given position.
-      </p>
-      <details class="table-accordion">
-        <summary>Python: Logistic Regression per Role</summary>
-        <pre>
+display(cor_df)
+    </pre>
+    <div class="output-block">
+      position_group	stat	correlation	n_games
+47	forward	goals	0.192528	37192
+63	forward	goal_assists	0.156550	37192
+60	forward	marks_inside_50	0.150516	37192
+44	forward	kicks	0.137904	37192
+45	forward	marks	0.130274	37192
+52	forward	inside_50	0.102904	37192
+58	forward	uncontested_possessions	0.102205	37192
+57	forward	contested_possessions	0.092329	37192
+48	forward	behinds	0.085630	37192
+59	forward	contested_marks	0.068345	37192
+46	forward	handballs	0.052672	37192
+62	forward	bounces	0.039222	37192
+65	forward	pct_kicks	0.039027	37192
+55	forward	frees_for	0.038486	37192
+50	forward	tackles	0.037842	37192
+53	forward	clearances	0.033818	37192
+49	forward	hit_outs	0.022139	37192
+61	forward	one_percenters	0.016072	37192
+56	forward	frees_against	0.010589	37192
+54	forward	clangers	-0.007225	37192
+64	forward	pct_contested	-0.009810	37192
+51	forward	rebounds	-0.041622	37192
+41	midfield	goal_assists	0.148017	33329
+25	midfield	goals	0.125454	33329
+22	midfield	kicks	0.123685	33329
+30	midfield	inside_50	0.116824	33329
+36	midfield	uncontested_possessions	0.114595	33329
+23	midfield	marks	0.100351	33329
+38	midfield	marks_inside_50	0.090943	33329
+24	midfield	handballs	0.057341	33329
+35	midfield	contested_possessions	0.054930	33329
+31	midfield	clearances	0.051917	33329
+26	midfield	behinds	0.051516	33329
+43	midfield	pct_kicks	0.045757	33329
+40	midfield	bounces	0.038246	33329
+28	midfield	tackles	0.025016	33329
+39	midfield	one_percenters	0.021745	33329
+33	midfield	frees_for	0.020420	33329
+37	midfield	contested_marks	0.017653	33329
+34	midfield	frees_against	-0.009734	33329
+27	midfield	hit_outs	-0.020974	33329
+29	midfield	rebounds	-0.029358	33329
+32	midfield	clangers	-0.031324	33329
+42	midfield	pct_contested	-0.032378	33329
+69	midfield,forward	goals	0.154562	11948
+85	midfield,forward	goal_assists	0.143661	11948
+74	midfield,forward	inside_50	0.127743	11948
+66	midfield,forward	kicks	0.126037	11948
+82	midfield,forward	marks_inside_50	0.121143	11948
+67	midfield,forward	marks	0.117091	11948
+80	midfield,forward	uncontested_possessions	0.100398	11948
+79	midfield,forward	contested_possessions	0.088488	11948
+70	midfield,forward	behinds	0.078000	11948
+75	midfield,forward	clearances	0.063081	11948
+68	midfield,forward	handballs	0.059741	11948
+72	midfield,forward	tackles	0.057019	11948
+81	midfield,forward	contested_marks	0.054358	11948
+87	midfield,forward	pct_kicks	0.039066	11948
+77	midfield,forward	frees_for	0.030456	11948
+83	midfield,forward	one_percenters	0.027199	11948
+71	midfield,forward	hit_outs	0.019268	11948
+78	midfield,forward	frees_against	0.018816	11948
+84	midfield,forward	bounces	0.018481	11948
+86	midfield,forward	pct_contested	0.000865	11948
+76	midfield,forward	clangers	-0.007308	11948
+73	midfield,forward	rebounds	-0.053896	11948
+91	ruck	goals	0.127212	8653
+104	ruck	marks_inside_50	0.117023	8653
+107	ruck	goal_assists	0.108774	8653
+96	ruck	inside_50	0.086927	8653
+89	ruck	marks	0.085218	8653
+102	ruck	uncontested_possessions	0.080268	8653
+88	ruck	kicks	0.076709	8653
+103	ruck	contested_marks	0.068988	8653
+101	ruck	contested_possessions	0.060850	8653
+90	ruck	handballs	0.059462	8653
+92	ruck	behinds	0.057509	8653
+94	ruck	tackles	0.041473	8653
+97	ruck	clearances	0.029260	8653
+93	ruck	hit_outs	0.025160	8653
+106	ruck	bounces	0.021075	8653
+99	ruck	frees_for	0.012647	8653
+109	ruck	pct_kicks	0.012421	8653
+100	ruck	frees_against	0.009886	8653
+105	ruck	one_percenters	-0.008933	8653
+108	ruck	pct_contested	-0.018678	8653
+98	ruck	clangers	-0.020620	8653
+95	ruck	rebounds	-0.045676	8653
+1	small_defender	marks	0.112236	40427
+14	small_defender	uncontested_possessions	0.097265	40427
+19	small_defender	goal_assists	0.092625	40427
+0	small_defender	kicks	0.089843	40427
+8	small_defender	inside_50	0.083993	40427
+3	small_defender	goals	0.078471	40427
+21	small_defender	pct_kicks	0.048824	40427
+16	small_defender	marks_inside_50	0.043093	40427
+18	small_defender	bounces	0.039560	40427
+4	small_defender	behinds	0.030272	40427
+15	small_defender	contested_marks	0.028492	40427
+13	small_defender	contested_possessions	0.024958	40427
+2	small_defender	handballs	0.024836	40427
+17	small_defender	one_percenters	0.008515	40427
+9	small_defender	clearances	0.004235	40427
+6	small_defender	tackles	-0.001136	40427
+5	small_defender	hit_outs	-0.003036	40427
+11	small_defender	frees_for	-0.013880	40427
+7	small_defender	rebounds	-0.025851	40427
+20	small_defender	pct_contested	-0.035344	40427
+12	small_defender	frees_against	-0.039762	40427
+10	small_defender	clangers	-0.071719	40427
+124	tall_defender	uncontested_possessions	0.101743	9406
+111	tall_defender	marks	0.100411	9406
+110	tall_defender	kicks	0.090199	9406
+118	tall_defender	inside_50	0.068144	9406
+129	tall_defender	goal_assists	0.050193	9406
+112	tall_defender	handballs	0.046438	9406
+125	tall_defender	contested_marks	0.039914	9406
+123	tall_defender	contested_possessions	0.039235	9406
+131	tall_defender	pct_kicks	0.032112	9406
+119	tall_defender	clearances	0.024921	9406
+113	tall_defender	goals	0.021450	9406
+128	tall_defender	bounces	0.021236	9406
+126	tall_defender	marks_inside_50	0.018500	9406
+115	tall_defender	hit_outs	0.016520	9406
+116	tall_defender	tackles	0.004533	9406
+127	tall_defender	one_percenters	-0.003850	9406
+114	tall_defender	behinds	-0.004652	9406
+117	tall_defender	rebounds	-0.008726	9406
+121	tall_defender	frees_for	-0.015003	9406
+130	tall_defender	pct_contested	-0.047533	9406
+122	tall_defender	frees_against	-0.056831	9406
+120	tall_defender	clangers	-0.073359	9406
+    </div>
+  </details>
+
+  <h2>Step 4: Logistic Regression by Role</h2>
+  <p>
+    To have a better understanding of what attributes are linked to a player contributing to their team winning, I did logistic regression:
+  </p>
+  <details class="table-accordion">
+    <summary>Python: Logistic regression per role</summary>
+    <pre>
 # For each role conduct logistic regression
 roles = ['forward', 'midfield', 'midfield,forward', 'ruck', 'tall_defender', 'small_defender']
+
+# Dictionary to store coefficients for each role
 role_coef_dict = {}
+
 for role in roles:
     pgs_role = pgs[pgs['position_group'] == role].dropna(subset=stat_cols + ['won'])
-    if len(pgs_role) < 50: continue
+
+    if len(pgs_role) < 50:
+        print(f"Skipping {role} (not enough samples: {len(pgs_role)})")
+        continue
+
     X = pgs_role[stat_cols].fillna(0)
     y = pgs_role['won']
+
+    # Standardize
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
+
+    # Logistic regression
     model = LogisticRegression(max_iter=1000)
     model.fit(X_scaled, y)
+
     coefs = pd.Series(model.coef_[0], index=stat_cols)
     coefs = coefs.sort_values(key=np.abs, ascending=False)
-    top = coefs.head(25)
+  
+    top = coefs.head(25)  # Change to view top #s
     role_coef_dict[role] = top
+
     print(f"\n{role.upper()} TOP COEFFICIENTS:\n")
     display(top)
-        </pre>
-        <div class="code-output">
-Output:<br>
-<strong>FORWARD TOP COEFFICIENTS:</strong>
-<br>
-goals (0.3479), goal_assists (0.2437), kicks (0.2101), clangers (-0.1351), hit_outs (0.1041), ...
-<br>
-<strong>MIDFIELD TOP COEFFICIENTS:</strong>
-<br>
-goal_assists (0.2316), kicks (0.2198), clangers (-0.2058), goals (0.1723), rebounds (-0.1495), ...
-<br>
-etc. (see document for full coefficients per role)
-        </div>
-      </details>
+    </pre>
+    <div class="output-block">
+      FORWARD TOP COEFFICIENTS:
 
-      <h3>Top 5 Players per Role: Logistic Regression Model (2022–2025)</h3>
-      <details class="table-accordion">
-        <summary>Python: Calculate Top Players (Logistic Model)</summary>
-        <pre>
-[Python code for scoring & grouping players by average impact_score (min 15 games)]
-        </pre>
-        <div class="code-output">
-Output:<br>
-<b>Forwards:</b> Jeremy Cameron, Toby Greene, Charlie Curnow, Taylor Walker, Tom Hawkins<br>
-<b>Midfields:</b> Marcus Bontempelli, Christian Petracca, Zach Merrett, Chad Warner, Hugh McCluggage<br>
-<b>Mid/Forwards:</b> Kyle Langford, Shai Bolton, Errol Gulden, Dustin Martin, Jamie Elliott<br>
-<b>Rucks:</b> Tim English, Luke Jackson, Hayden McLean, Rowan Marshall, Sean Darcy<br>
-<b>Tall Defenders:</b> Harris Andrews, Mark Blicavs, Tom Barrass, Brennan Cox, Jacob Weitering<br>
-<b>Small Defenders:</b> Jason Johannisen, Callum Wilkie, Darcy Byrne-Jones, Bradley Hill, Jayden Short
-        </div>
-      </details>
+goals                      0.347901
+goal_assists               0.243662
+kicks                      0.210102
+clangers                  -0.135133
+hit_outs                   0.104088
+pct_kicks                 -0.094317
+rebounds                  -0.086666
+one_percenters             0.082434
+tackles                    0.075196
+marks                      0.071431
+frees_against              0.067163
+contested_marks           -0.064314
+handballs                  0.053409
+contested_possessions     -0.043774
+inside_50                  0.038728
+behinds                    0.038466
+frees_for                 -0.037641
+bounces                    0.035718
+marks_inside_50            0.034736
+pct_contested              0.028714
+uncontested_possessions   -0.014579
+clearances                -0.012778
+dtype: float64
 
-      <h2>Polynomial Model</h2>
-      <p>
-        The next step was polynomial regression with L1 regularisation. This allows the model to use combinations of variables, but prevents overfitting by zeroing less important ones. This model takes much longer to train.
-      </p>
-      <details class="table-accordion">
-        <summary>Python: Polynomial Model by Role (L1 regularised)</summary>
-        <pre>
-# Polynomial regression analysis with L1 regularisation (degree 2)
-[Python code: transform with PolynomialFeatures, fit LogisticRegressionCV(penalty="l1"), extract coefs]
-        </pre>
-        <div class="code-output">
-Output:<br>
-<b>FORWARD – TOP POLYNOMIAL COEFFICIENTS:</b><br>
-goals (0.3347), goal_assists (0.2313), clangers (-0.0678), handballs (0.0637), ...<br>
-<b>MIDFIELD – TOP POLYNOMIAL COEFFICIENTS:</b><br>
-goal_assists (0.1811), goals (0.1658), kicks (0.1222), clangers (-0.1218), ...<br>
-(etc. for other roles; see full table above.)
-        </div>
-      </details>
+MIDFIELD TOP COEFFICIENTS:
 
-      <h3>Top 5 Players per Role: Polynomial Model (2022–2025)</h3>
-      <details class="table-accordion">
-        <summary>Python: Top Players by Polynomial Model</summary>
-        <pre>
-[Python: same grouping by average impact_score (min 10 games), but use polynomial coefs/features]
-        </pre>
-        <div class="code-output">
-Output:<br>
-<b>Forwards:</b> Jeremy Cameron, Toby Greene, Taylor Walker, Charlie Curnow, Tom Lynch<br>
-<b>Midfields:</b> Marcus Bontempelli, Christian Petracca, Zach Merrett, Chad Warner, Hugh McCluggage<br>
-<b>Mid/Forwards:</b> Kyle Langford, Shai Bolton, Errol Gulden, Josh Dunkley, Patrick Dangerfield<br>
-<b>Rucks:</b> Tim English, Luke Jackson, Rowan Marshall, Sean Darcy, Hayden McLean<br>
-<b>Tall Defenders:</b> Mark Blicavs, Kieren Briggs, Harris Andrews, Brennan Cox, Tom Barrass<br>
-<b>Small Defenders:</b> Jason Johannisen, Bradley Hill, Sam Reid, Darcy Byrne-Jones, Jayden Short
-        </div>
-      </details>
+goal_assists               0.231588
+kicks                      0.219833
+clangers                  -0.205788
+goals                      0.172308
+rebounds                  -0.149507
+handballs                  0.144405
+frees_against              0.079802
+marks                      0.074292
+hit_outs                  -0.065315
+one_percenters             0.054485
+pct_kicks                  0.052715
+marks_inside_50            0.048549
+inside_50                  0.042139
+contested_possessions     -0.041258
+uncontested_possessions   -0.033528
+contested_marks           -0.031725
+frees_for                 -0.029882
+tackles                    0.021074
+bounces                    0.020144
+pct_contested             -0.017252
+behinds                    0.004137
+clearances                -0.000296
+dtype: float64
 
-      <h3>Summary Table: Players in Both Top 5s</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Role</th>
-            <th>Players in Both Top 5</th>
-            <th>Only in Logistic</th>
-            <th>Only in Polynomial</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Forwards</td>
-            <td>Cameron, Greene, Walker, Curnow</td>
-            <td>Hawkins</td>
-            <td>Lynch</td>
-          </tr>
-          <tr>
-            <td>Midfields</td>
-            <td>Bontempelli, Petracca, Merrett, Warner, McCluggage</td>
-            <td>&mdash;</td>
-            <td>&mdash;</td>
-          </tr>
-          <tr>
-            <td>Mid/Forwards</td>
-            <td>Langford, Bolton, Gulden</td>
-            <td>Martin, Elliott</td>
-            <td>Dunkley, Dangerfield</td>
-          </tr>
-          <tr>
-            <td>Rucks</td>
-            <td>English, Jackson, Marshall, Darcy, McLean</td>
-            <td>&mdash;</td>
-            <td>&mdash;</td>
-          </tr>
-          <tr>
-            <td>Tall Defenders</td>
-            <td>Andrews, Blicavs, Barrass, Cox</td>
-            <td>Weitering</td>
-            <td>Briggs</td>
-          </tr>
-          <tr>
-            <td>Small Defenders</td>
-            <td>Johannisen, Byrne-Jones, Hill, Short</td>
-            <td>Wilkie</td>
-            <td>S. Reid</td>
-          </tr>
-        </tbody>
-      </table>
+MIDFIELD,FORWARD TOP COEFFICIENTS:
 
-      <p>
-        After creating the two models and running sanity checks on both the stats and the player outputs, I moved to actual match prediction.
-      </p>
+kicks                      0.308666
+goals                      0.229733
+goal_assists               0.204094
+clangers                  -0.176739
+rebounds                  -0.166119
+marks                      0.157714
+uncontested_possessions   -0.124452
+frees_against              0.104067
+tackles                    0.099372
+handballs                  0.094109
+inside_50                  0.079391
+pct_kicks                 -0.067313
+one_percenters             0.064515
+frees_for                 -0.051057
+contested_marks           -0.042489
+behinds                    0.041297
+contested_possessions     -0.040445
+bounces                   -0.029178
+marks_inside_50            0.025667
+clearances                -0.016799
+pct_contested              0.007066
+hit_outs                   0.005046
+dtype: float64
 
-      <details class="table-accordion">
-        <summary>Python: Build Team Impact, Predict Games, Evaluate Models</summary>
-        <pre>
-# Code for scoring, rolling impact averages, merging into teams, then predicting winners (see above for details)
-        </pre>
-        <div class="code-output">
-Output:<br>
-<b>Logistic:</b><br>
-Accuracy: 0.637<br>
-ROC AUC: 0.708<br>
-Confusion matrix:<br>
-[[121 166] [60 276]]<br>
-<b>Polynomial:</b><br>
-Accuracy: 0.658<br>
-ROC AUC: 0.714<br>
-Confusion matrix:<br>
-[[131 156] [57 279]]<br>
-        </div>
-      </details>
+RUCK TOP COEFFICIENTS:
 
-      <table>
-        <thead>
-          <tr>
-            <th>Model</th>
-            <th>Accuracy Score</th>
-            <th>ROC AUC</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Home team only</td>
-            <td>56.6%</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Top-down (Model v1)</td>
-            <td>61.7%</td>
-            <td>0.672</td>
-          </tr>
-          <tr>
-            <td>Player-based sum (Model v2a)</td>
-            <td>63.7%</td>
-            <td>0.708</td>
-          </tr>
-          <tr>
-            <td>Player-based sum (Model v2b)</td>
-            <td>65.8%</td>
-            <td>0.714</td>
-          </tr>
-        </tbody>
-      </table>
+clangers                  -0.205513
+goals                      0.181325
+frees_against              0.167900
+goal_assists               0.166375
+kicks                      0.109148
+inside_50                  0.095953
+marks_inside_50            0.090534
+rebounds                  -0.089856
+handballs                  0.089803
+tackles                    0.078813
+uncontested_possessions    0.067930
+frees_for                 -0.061949
+hit_outs                   0.045791
+contested_marks            0.039146
+marks                     -0.036270
+contested_possessions     -0.033594
+pct_kicks                 -0.023715
+bounces                    0.022851
+pct_contested              0.022254
+clearances                 0.009097
+behinds                    0.007468
+one_percenters             0.000218
+dtype: float64
 
-      <p>
-        In summary: The polynomial player model provides a small boost in predictive power (roughly +2% accuracy) compared to a basic logistic version. That's not massive, and comes at a big cost in complexity and runtime. Further analysis is needed, especially combining this with top-down factors like age and ground advantage.<br>
-        <br>
-        <i>
-          Next: I'll look at age profiles and home ground advantage—two variables that were highly relevant in the simpler first model.
-        </i>
-      </p>
+TALL_DEFENDER TOP COEFFICIENTS:
 
-      <hr>
-      <small>
-        [1]: <a href="https://www.youtube.com/watch?v=zEmi05AAVe8" target="_blank">Eric Bana AFL joke reference</a>
-      </small>
+clangers                  -0.221088
+contested_possessions      0.217576
+uncontested_possessions    0.154013
+rebounds                  -0.133178
+pct_contested             -0.118049
+behinds                   -0.083222
+frees_for                 -0.078578
+pct_kicks                  0.063846
+goal_assists               0.056581
+inside_50                  0.054168
+marks                      0.042912
+handballs                 -0.041781
+marks_inside_50            0.031637
+one_percenters             0.030460
+clearances                 0.030272
+frees_against              0.029218
+hit_outs                   0.019895
+kicks                      0.016463
+goals                     -0.009797
+bounces                    0.004444
+contested_marks           -0.004231
+tackles                   -0.000437
+dtype: float64
+
+SMALL_DEFENDER TOP COEFFICIENTS:
+
+clangers                  -0.238748
+uncontested_possessions    0.230713
+contested_possessions      0.164866
+rebounds                  -0.161714
+marks                      0.139264
+goal_assists               0.137522
+goals                      0.133785
+handballs                 -0.125773
+one_percenters             0.078544
+clearances                -0.077347
+frees_for                 -0.075558
+frees_against              0.056599
+marks_inside_50           -0.050515
+pct_kicks                  0.050279
+bounces                    0.041601
+inside_50                  0.038532
+contested_marks           -0.021458
+hit_outs                  -0.014475
+kicks                      0.014461
+pct_contested              0.011044
+tackles                   -0.002341
+behinds                   -0.002283
+dtype: float64
     </div>
+  </details>
+
+  <p>So, what did this tell me:</p>
+    <ul>
+    <li>At a minimum, the model makes prima facie sense. </li>
+    <li>A lot of clangers seemed to be a relatively strong negative indicator, especially for defenders</li>
+    <li>The negative correlation for rebounds reflects that the more times a defender has rebounded the ball out of their defensive 50, the more times the ball has entered their defensive 50. This leads me to think that defense is more about control of possession on the ground than it is about the stats of your defenders</li>
+    <li>Surprisingly, clearances didn't seem to matter for midfielders. This could be because I lacked the granularity to understand the type of clearance that occurred, or it could be because success is much more about controlling possession in your part of the ground: a clearance reflects your ability to win the ball from a stoppage, but not necessarily whether or not possession has been kept or where the clearance took place.</li>
+    </ul>
+
+  <p>To validate the data I also took a look at what my model said were the most impactful players from 2022 to round 9, 2025:</p>
+
+<details class="table-accordion"><summary>Python code &amp; output</summary>
+<pre>
+    pgs_period = pgs.merge(
+    games[['game_id', 'season_year', 'round_number', 'game_date']],
+    on='game_id', how='left'
+)
+
+
+# Filter for the target period: 2022 to round 9, 2025
+pgs_period = pgs_period[
+    ((pgs_period['season_year'] > 2021) & 
+    ((pgs_period['season_year'] < 2025) | 
+     ((pgs_period['season_year'] == 2025) & (pgs_period['round_number'] <= 9))))
+]
+
+roles = ['forward', 'midfield', 'midfield,forward', 'ruck', 'tall_defender', 'small_defender']
+
+top_players_per_role = {}
+role_data_dict = {}
+print(f"Number of games in dataset: {len(pgs_period)}")
+
+for role in roles:
+    coefs = role_coef_dict[role]
+    stat_cols_role = list(coefs.index)
+
+    # Subset for position and drop missing
+    df_role = pgs_period[pgs_period['position_group'] == role].copy()
+    df_role = df_role.dropna(subset=stat_cols_role)
+    if len(df_role) < 10:
+        print(f"Skipping {role} (not enough samples: {len(df_role)})")
+        continue
+
+    # Merge in full_name for later lookup
+    df_role = df_role.merge(players[['player_id', 'full_name', 'height_cm']], on='player_id', how='left')
+
+    # Standardize stats using mean and std from THIS PERIOD
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df_role[stat_cols_role])
+    df_role_std = pd.DataFrame(X_scaled, columns=stat_cols_role, index=df_role.index)
+
+    # Calculate impact score for each game
+    df_role['impact_score'] = df_role_std.mul(coefs, axis=1).sum(axis=1)
+
+    # Aggregate by player (average impact_score, games played)
+    player_scores = (
+        df_role.groupby('player_id')
+        .agg(
+            impact_score=('impact_score', 'mean'),
+            games_played=('impact_score', 'count')
+        )
+        .reset_index()
+        .merge(players[['player_id', 'full_name', 'height_cm']], on='player_id', how='left')
+        .sort_values('impact_score', ascending=False)
+    )
+
+    # Put in minimum games of 15
+    player_scores = player_scores[player_scores['games_played'] > 15]
+    player_scores = player_scores.sort_values('impact_score', ascending=False)
+
+    print(f"\nTop 5 {role.upper()}S:")
+    display(player_scores.head(5)[['full_name', 'games_played', 'impact_score']])
+    players_to_filter = 5
+    top_players_per_role[role] = player_scores.head(players_to_filter)  #
+    role_data_dict[role] = df_role.copy()
+</pre>
+    <div class="output-block">
+      Top 5 FORWARDS:
+full_name	games_played	impact_score
+85	Jeremy Cameron	75	0.683134
+39	Toby Greene	71	0.564521
+21	Charlie Curnow	76	0.549450
+123	Taylor Walker	66	0.525210
+87	Tom Hawkins	57	0.478029
+
+Top 5 MIDFIELDS:
+full_name	games_played	impact_score
+90	Marcus Bontempelli	72	0.695789
+3	Christian Petracca	70	0.579013
+61	Zach Merrett	71	0.418897
+10	Chad Warner	78	0.401900
+16	Hugh McCluggage	84	0.345121
+
+Top 5 MIDFIELD,FORWARDS:
+full_name	games_played	impact_score
+21	Kyle Langford	57	0.572625
+7	Shai Bolton	75	0.458497
+3	Errol Gulden	75	0.453700
+18	Dustin Martin	42	0.421031
+89	Jamie Elliott	66	0.417258
+
+Top 5 RUCKS:
+full_name	games_played	impact_score
+17	Tim English	70	0.380390
+22	Luke Jackson	73	0.342759
+2	Hayden McLean	63	0.293929
+15	Rowan Marshall	76	0.260594
+33	Sean Darcy	52	0.197766
+
+Top 5 TALL_DEFENDERS:
+full_name	games_played	impact_score
+2	Harris Andrews	84	0.212034
+20	Mark Blicavs	74	0.211950
+25	Tom Barrass	59	0.158341
+27	Brennan Cox	60	0.149575
+33	Jacob Weitering	74	0.149393
+
+Top 5 SMALL_DEFENDERS:
+full_name	games_played	impact_score
+81	Jason Johannisen	32	0.350372
+68	Callum Wilkie	77	0.291034
+85	Darcy Byrne-Jones	77	0.267349
+66	Bradley Hill	73	0.253701
+26	Jayden Short	69	0.239432
+
+    </div>
+</details>
+  <p>Overall, the players here make sense. The only table that looks out of place is the rucks, and this is probably due to a combination of how much the model likes rucks and how some rucks, especially secondary rucks, play a large amount of time forward. Overall, the ruck position does not contribute a huge amount to the model (analysis below showed that each team has 1-1.5 rucks each game) that this sanity check made me comfortable enough to proceed.</p>
+
+  <h2>Step 5: Polynomial Regression</h2>
+  <p>
+    The next step was to look at polynomial regression. Instead of building the model based on how any single variable for each role type contributed to a win, what about a model that takes looks at combinations of different variables for each role type? Well, by looking at multiple variables, the model captured not just the individual effect of a stat (like goals or marks), but also how combinations of stats, such as marks and contested possessions might influence the chances of a win.
+  </p>
+  <p>
+    To prevent the model from overfitting as the number of variables and interactions explodes, I used L1 regularisation. This selects only the most important features and interactions by forcing the less useful ones’ coefficients down to zero. This type of analysis is much more intensive (running the previous model took seconds, this one took ~80 minutes to complete for all role types):
+  </p>
+  <details class="table-accordion">
+    <summary>Python: Polynomial regression per role</summary>
+    <pre>
+# Polynomial regression analysis with L1 regularisation
+roles = ['forward', 'midfield', 'midfield,forward', 'ruck', 'tall_defender', 'small_defender']
+
+poly_results_dict = {}
+
+for role in roles:
+    df = pgs_period[pgs_period['position_group'] == role].dropna(subset=stat_cols + ['won']).copy()
+    if len(df) < 50:
+        print(f"Skipping {role}: not enough samples ({len(df)})")
+        continue
+
+    X_raw = df[stat_cols]
+    y = df['won']
+
+    # Standardise
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_raw)
+
+    # Polynomial features (degree=2 includes squares and pairwise interactions)
+    poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=False)
+    X_poly = poly.fit_transform(X_scaled)
+    poly_feature_names = poly.get_feature_names_out(stat_cols)
+
+    # Fit logistic regression
+    model = LogisticRegressionCV(
+        Cs=10,
+        penalty='l1',
+        solver='saga',      
+        max_iter=5000,
+        cv=5,
+        scoring='accuracy',
+        n_jobs=-1
+    )
+    model.fit(X_poly, y)
+
+    # Coefficients as series
+    coefs = pd.Series(model.coef_[0], index=poly_feature_names)
+    coefs = coefs[coefs != 0].sort_values(key=np.abs, ascending=False)
+    poly_results_dict[role] = coefs
+
+    print(f"\n{role.upper()} – TOP POLYNOMIAL COEFFICIENTS")
+    display(coefs.head(20))
+    </pre>
+    <div class="output-block">
+        FORWARD – TOP POLYNOMIAL COEFFICIENTS
+goals                            0.334683
+goal_assists                     0.231253
+clangers                        -0.067788
+handballs                        0.063715
+hit_outs                         0.062232
+uncontested_possessions          0.058576
+tackles                          0.055132
+kicks                            0.049312
+one_percenters                   0.044489
+marks uncontested_possessions    0.043815
+inside_50                        0.040811
+handballs rebounds              -0.035239
+rebounds                        -0.034399
+behinds                          0.030854
+rebounds clearances             -0.023333
+tackles rebounds                -0.023150
+goals uncontested_possessions    0.020610
+marks_inside_50^2                0.018670
+kicks marks                      0.018287
+clearances bounces              -0.017653
+dtype: float64
+
+MIDFIELD – TOP POLYNOMIAL COEFFICIENTS
+goal_assists               0.181146
+goals                      0.165754
+kicks                      0.122247
+clangers                  -0.121756
+rebounds                  -0.112623
+uncontested_possessions    0.082957
+inside_50                  0.052205
+marks_inside_50            0.039336
+marks^2                    0.037272
+marks                      0.029332
+one_percenters             0.023973
+goal_assists^2             0.023064
+tackles^2                  0.018552
+clearances^2               0.018058
+clangers pct_contested     0.012714
+goals pct_kicks           -0.011911
+handballs^2                0.010904
+behinds bounces            0.009817
+pct_kicks^2                0.009563
+hit_outs                  -0.009298
+dtype: float64
+
+MIDFIELD,FORWARD – TOP POLYNOMIAL COEFFICIENTS
+goals                               0.213675
+goal_assists                        0.177952
+rebounds                           -0.136174
+clangers                           -0.132545
+marks                               0.126077
+kicks                               0.101396
+inside_50                           0.092780
+tackles                             0.080299
+frees_against                       0.051929
+tackles rebounds                   -0.046828
+one_percenters                      0.038642
+rebounds uncontested_possessions   -0.037359
+marks bounces                       0.034929
+bounces                            -0.034156
+handballs rebounds                 -0.033478
+contested_possessions^2             0.033198
+behinds                             0.033062
+clangers frees_against              0.032618
+marks uncontested_possessions       0.032588
+marks handballs                     0.031925
+dtype: float64
+
+RUCK – TOP POLYNOMIAL COEFFICIENTS
+goal_assists                        0.174342
+goals                               0.156079
+clangers                           -0.133843
+marks_inside_50                     0.114077
+inside_50                           0.106943
+rebounds                           -0.101528
+tackles                             0.090398
+hit_outs contested_possessions     -0.067115
+handballs                           0.066664
+rebounds one_percenters             0.060327
+uncontested_possessions             0.058935
+clangers frees_against              0.058635
+frees_against                       0.058267
+behinds bounces                     0.053974
+handballs rebounds                 -0.053969
+hit_outs                            0.047599
+clearances frees_for               -0.045181
+hit_outs tackles                    0.044156
+kicks behinds                      -0.040616
+clangers uncontested_possessions   -0.037899
+dtype: float64
+
+TALL_DEFENDER – TOP POLYNOMIAL COEFFICIENTS
+clangers                                -0.194810
+kicks                                    0.124370
+uncontested_possessions                  0.093394
+behinds                                 -0.077723
+clearances one_percenters               -0.076865
+inside_50                                0.068478
+rebounds                                -0.064861
+bounces pct_kicks                       -0.060919
+frees_against contested_marks            0.057097
+clearances                              -0.054256
+inside_50 clangers                       0.052059
+inside_50 bounces                        0.050424
+clearances bounces                      -0.049639
+marks                                    0.047705
+one_percenters^2                        -0.046565
+hit_outs marks_inside_50                 0.046276
+contested_possessions marks_inside_50    0.046087
+contested_marks pct_contested           -0.042541
+one_percenters                           0.041194
+clearances uncontested_possessions      -0.040564
+dtype: float64
+
+SMALL_DEFENDER – TOP POLYNOMIAL COEFFICIENTS
+clangers                  -0.202948
+marks                      0.154267
+rebounds                  -0.130001
+kicks                      0.090703
+uncontested_possessions    0.089549
+goal_assists               0.086309
+one_percenters             0.074818
+pct_kicks                  0.064863
+inside_50                  0.059688
+hit_outs                  -0.056637
+goals                      0.053613
+clearances                -0.052260
+contested_possessions      0.045059
+frees_for                 -0.040788
+kicks rebounds            -0.037522
+marks_inside_50           -0.031150
+frees_against              0.029558
+goals goal_assists         0.027522
+bounces                    0.027352
+goals clangers             0.026069
+dtype: float64
+    </div>
+  </details>
+  <p>The output doesn't tell me too much different from the initial logistic regression. Clangers are important for defenders and goals/goal assists are important for everyone else</p>
+
+<p>Running a sanity check over which players this model thinks were the best between 2022 and round 9, 2025 were and comparing this to the initial logistic regression model:</p>
+
+<details class="table-accordion"><summary>Python code &amp; output</summary>
+    <pre>
+        # Looking at top players to sense check model
+top_players_per_role = {}
+
+# Filter for the target period: 2022 to round 9, 2025
+"""
+pgs_period = pgs_period[
+    ((pgs_period['season_year'] > 2021) & 
+    ((pgs_period['season_year'] < 2025) | 
+     ((pgs_period['season_year'] == 2025) & (pgs_period['round_number'] <= 9))))
+]
+"""
+
+
+for role in roles:
+    coefs = poly_results_dict.get(role)
+    if coefs is None or len(coefs) == 0:
+        print(f"Skipping {role}: no coefficients found")
+        continue
+    poly_feature_names = list(coefs.index)
+    
+    # Subset for the role and time period, drop NaNs on original stats
+    df_role = pgs_period[pgs_period['position_group'] == role].dropna(subset=stat_cols).copy()
+    if len(df_role) < 10:
+        print(f"Skipping {role}: not enough samples ({len(df_role)})")
+        continue
+
+    # Standardize and create polynomial features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df_role[stat_cols])
+    poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=False)
+    X_poly = poly.fit_transform(X_scaled)
+    poly_feature_names_all = poly.get_feature_names_out(stat_cols)
+    X_poly_df = pd.DataFrame(X_poly, columns=poly_feature_names_all, index=df_role.index)
+
+    # Only keep the features that survived L1 regularization
+    X_poly_selected = X_poly_df[poly_feature_names]
+
+    # Calculate impact score
+    impact_score = X_poly_selected.mul(coefs, axis=1).sum(axis=1)
+    df_role['impact_score'] = impact_score
+
+    # Merge in player info
+    df_role = df_role.merge(players[['player_id', 'full_name', 'height_cm']], on='player_id', how='left')
+
+    # Group by player and get top 10 (with >= 10 games)
+    player_scores = (
+        df_role.groupby('player_id')
+        .agg(
+            impact_score=('impact_score', 'mean'),
+            games_played=('impact_score', 'count')
+        )
+        .reset_index()
+        .merge(players[['player_id', 'full_name', 'height_cm']], on='player_id', how='left')
+        .sort_values('impact_score', ascending=False)
+    )
+    player_scores = player_scores[player_scores['games_played'] >= 10]
+    # print(f"Number of games in dataset: {len(pgs_period)}")
+    top_players_per_role[role] = player_scores.head(10)
+    print(f"\nTop 10 {role.upper()}S:")
+    display(player_scores.head(5)[['full_name', 'games_played', 'impact_score']])
+    </pre>
+    <div class="output-block">
+        Top 10 FORWARDS:
+full_name	games_played	impact_score
+85	Jeremy Cameron	75	0.795362
+39	Toby Greene	71	0.651204
+123	Taylor Walker	66	0.581902
+21	Charlie Curnow	76	0.570294
+266	Tom Lynch	23	0.525674
+
+Top 10 MIDFIELDS:
+full_name	games_played	impact_score
+90	Marcus Bontempelli	72	0.769842
+3	Christian Petracca	70	0.684768
+61	Zach Merrett	71	0.529695
+10	Chad Warner	78	0.496455
+16	Hugh McCluggage	84	0.433423
+
+Top 10 MIDFIELD,FORWARDS:
+full_name	games_played	impact_score
+21	Kyle Langford	57	0.690060
+7	Shai Bolton	75	0.622008
+3	Errol Gulden	75	0.563588
+6	Josh Dunkley	82	0.554034
+34	Patrick Dangerfield	60	0.553518
+
+Top 10 RUCKS:
+full_name	games_played	impact_score
+17	Tim English	70	0.447355
+22	Luke Jackson	73	0.365542
+15	Rowan Marshall	76	0.227793
+33	Sean Darcy	52	0.191768
+2	Hayden McLean	63	0.178117
+
+Top 10 TALL_DEFENDERS:
+full_name	games_played	impact_score
+20	Mark Blicavs	74	0.570801
+10	Kieren Briggs	52	0.429148
+2	Harris Andrews	84	0.224022
+27	Brennan Cox	60	0.172461
+25	Tom Barrass	59	0.165290
+
+Top 10 SMALL_DEFENDERS:
+full_name	games_played	impact_score
+81	Jason Johannisen	32	0.350530
+66	Bradley Hill	73	0.333770
+216	Sam Reid	18	0.326004
+85	Darcy Byrne-Jones	77	0.319055
+26	Jayden Short	69	0.273209
+
+    </div>
+</details>
+
+<p>Between the two models, there are slight differences in how they rank players, but it is not too material: </p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Role            </th>
+      <th>Players in Both Top 5                              </th>
+      <th>Only in Logistic </th>
+      <th>Only in Polynomial   </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Forwards        </td><td>Cameron, Greene, Walker, Curnow                    </td><td>Hawkins          </td><td>Lynch                </td></tr>
+    <tr><td>Midfields       </td><td>Bontempelli, Petracca, Merrett, Warner, McCluggage </td><td>—                </td><td>—                    </td></tr>
+    <tr><td>Mid/Forwards    </td><td>Langford, Bolton, Gulden                           </td><td>Martin, Elliott  </td><td>Dunkley, Dangerfield </td></tr>
+    <tr><td>Rucks           </td><td>English, Jackson, Marshall, Darcy, McLean          </td><td>—                </td><td>—                    </td></tr>
+    <tr><td>Tall Defenders  </td><td>Andrews, Blicavs, Barrass, Cox          </td><td>Weitering        </td><td>Briggs               </td></tr>
+    <tr><td>Small Defenders </td><td>Johannisen, Byrne-Jones, Hill, Short      </td><td>Wilkie           </td><td>S. Reid              </td></tr>
+  </tbody>
+</table>
+
+
+  <h2>Step 6: Calculating Player Impact Scores and Predictive Testing</h2>
+<p>So, after creating the two models, and having them pass initial sanity checking for the stats they think are important and the players they think are good, it was time to actually test them: can they predict a winner?</p>
+
+<p>In order to do this, the model would predict games based on which team had the highest impact score for their team:</p>
+<ul>
+<li>This score was calculated based on the average impact score for each previous 30 games played by a player</li>
+<li>A player had to play a minimum of 5 games to qualify to have an impact score</li>
+<li>If a player had not played at least 5 games, then they would receive 90% of the impact score of what an average player would have performed at in that position</li>
+<li>Substitute players were considered full players for the purpose of predicting the game</li>
+<li>No other factors (such as home ground advantage were considered)</li>
+</ul>
+  <details class="table-accordion">
+    <summary>Python: Predicting winner using player impact</summary>
+    <pre>
+# add in impact depending on the model type
+model_type = "logistic"  # choose logistic or poly
+
+impact_rows = []
+
+for role in roles:
+    if model_type == "logistic":
+        coefs = role_coef_dict.get(role)
+        if coefs is None or len(coefs) == 0:
+            continue
+        stat_cols_role = list(coefs.index)
+
+        df_role = pgs_period[pgs_period['position_group'] == role].copy()
+        df_role = df_role.dropna(subset=stat_cols_role)
+        if df_role.empty:
+            continue
+
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(df_role[stat_cols_role])
+        df_role_std = pd.DataFrame(X_scaled, columns=stat_cols_role, index=df_role.index)
+        df_role['impact_score'] = df_role_std.mul(coefs, axis=1).sum(axis=1)
+
+    elif model_type == "poly":
+        coefs = poly_results_dict.get(role)
+        if coefs is None or len(coefs) == 0:
+            continue
+        stat_cols_poly = list(coefs.index)
+
+        # Use original stat_cols for polynomial expansion
+        df_role = pgs_period[pgs_period['position_group'] == role].copy()
+        df_role = df_role.dropna(subset=stat_cols)
+        if df_role.empty:
+            continue
+
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(df_role[stat_cols])
+
+        poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=False)
+        X_poly = poly.fit_transform(X_scaled)
+        poly_feature_names = poly.get_feature_names_out(stat_cols)
+        X_poly_df = pd.DataFrame(X_poly, columns=poly_feature_names, index=df_role.index)
+
+        # Only use features selected by L1 regularization (nonzero coefficients)
+        X_poly_selected = X_poly_df[stat_cols_poly]
+        df_role['impact_score'] = X_poly_selected.mul(coefs, axis=1).sum(axis=1)
+
+    else:
+        raise ValueError(f"Unknown model_type: {model_type}")
+
+    impact_rows.append(df_role)
+
+# Concatenate all roles back into a single DataFrame
+pgs_period_with_score = pd.concat(impact_rows).sort_values(['player_id', 'game_date'])
+
+# Start to build out team model
+pgs_period_with_score = pgs_period_with_score.sort_values(['player_id', 'game_date'])
+
+# Get the rolling game average of players with a minimum period of games
+rolling_games = 30
+minimum_games = 5
+pgs_period_with_score['impact_rolling'] = (
+    pgs_period_with_score.groupby('player_id')['impact_score']
+    .transform(lambda x: x.shift(1).rolling(window=rolling_games, min_periods=minimum_games).mean())
+)
+
+# Find the position average for when players don't meet 15 games with a 10% penalty so the player is treated as slightly below average
+replacement_factor = 0.9 
+pos_avg = (
+    pgs_period_with_score.groupby('position_group')['impact_score']
+    .mean()
+    .mul(replacement_factor)
+    .rename('pos_avg_score')
+    .reset_index()
+)
+
+# Drop in case of a rerun (solves a bug)
+if 'pos_avg_score' in pgs_period_with_score.columns:
+    pgs_period_with_score = pgs_period_with_score.drop(columns=['pos_avg_score'])
+
+# Merge position scores into pgs_period
+pgs_period_with_score = pgs_period_with_score.merge(pos_avg, on='position_group', how='left')
+pgs_period_with_score['impact_for_model'] = pgs_period_with_score['impact_rolling'].fillna(pgs_period_with_score['pos_avg_score'])
+
+# Merge into teams
+pgs_period_merge = pgs_period_with_score[['player_id', 'game_id', 'team_id', 'impact_for_model']]
+team_game_impacts = (
+    pgs_period_merge.groupby(['game_id', 'team_id'])['impact_for_model']
+    .mean()  # or sum(), depending on your philosophy
+    .reset_index()
+)
+
+# Merge team impacts into games model
+games_model = games.merge(
+    team_game_impacts.rename(columns={'team_id': 'home_team_id', 'impact_for_model': 'home_team_impact'}),
+    on=['game_id', 'home_team_id'], how='left'
+).merge(
+    team_game_impacts.rename(columns={'team_id': 'away_team_id', 'impact_for_model': 'away_team_impact'}),
+    on=['game_id', 'away_team_id'], how='left'
+)
+games_model['impact_diff'] = games_model['home_team_impact'] - games_model['away_team_impact']
+games_model['winner'] = (games_model['home_result'] == 'W').astype(int)
+
+# Build out the model to predict winners
+df = games_model.dropna(subset=['home_team_impact', 'away_team_impact', 'impact_diff', 'winner']).copy()
+
+X = df[['impact_diff']]
+y = df['winner']
+
+# split out training data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=42)
+
+player_impact_model = LogisticRegression(max_iter=1000)
+player_impact_model.fit(X_train, y_train)
+
+y_pred = player_impact_model.predict(X_test)
+y_prob = player_impact_model.predict_proba(X_test)[:, 1]
+
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.3f}")
+print(f"ROC AUC: {roc_auc_score(y_test, y_prob):.3f}")
+print("Confusion matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+    </pre>
+    <div class="output-block">
+Logistic:
+Accuracy: 0.637
+ROC AUC: 0.708
+Confusion matrix:
+[[121 166]
+ [ 60 276]]
+ 
+Output:
+Polynomial
+Accuracy: 0.658
+ROC AUC: 0.714
+Confusion matrix:
+[[131 156]
+ [ 57 279]]
+    </div>
+  </details>
+
+  <h2>Findings & Next Steps</h2>
+  <p>
+    What does this mean? Well, firstly the polynomial has a ~2% better prediction rate: not massive, but not nothing. The confusion matrix tells us that the difference was 13 games.
+  </p>
+  <p>
+    Overall, this means that the model we created does slightly better than the initial simplistic top down model that we created. This is based purely on the playing history of each player involved and does not include any of the most relevant variables identified in the initial model (home ground advantage, age profiles).
+  </p>
+  <p>
+    Combining variables together in the polynomial model also provides another, if slight, improvement. I am not convinced that it is enough of an improvement to justify how much more complicated the model is (80 minutes of run time versus seconds), and further analysis is needed on other variables.
+  </p>
+<table>
+  <thead>
+    <tr><th>Model                         </th><th>Accuracy Score </th><th>ROC AUC </th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Home team only                </td><td>56.6%         </td><td>         </td></tr>
+    <tr><td>Top-down (Model v1)           </td><td>61.7%         </td><td>0.672   </td></tr>
+    <tr><td>Player-based sum (Model v2a)  </td><td>63.7%         </td><td>0.708   </td></tr>
+    <tr><td>Player-based sum (Model v2b)  </td><td>65.8%         </td><td>0.714   </td></tr>
+  </tbody>
+</table>
+  <p>
+    So, we are at the stage where we can start combining the models together just yet, and next we will start looking more in depth at age profiles and home ground advantage: two variables that impacted the simplistic first model highly.
+  </p>
+
+  <hr>
+  <small id="footnote-bana">1: <a href="https://www.youtube.com/watch?v=zEmi05AAVe8" target="_blank" rel="noopener">https://www.youtube.com/watch?v=zEmi05AAVe8</a></small>
+</div>
+
+
