@@ -615,8 +615,8 @@ dtype: float64<br>
 
   <p>So, what did this tell me:</p>
     <ul>
-    <li>At a minimum, the model makes prima facie sense. </li>
-    <li>A lot of clangers seemed to be a relatively strong negative indicator, especially for defenders</li>
+    <li>At a minimum, the model makes prima facie sense: clangers are bad, goals are good</li>
+    <li>Clangers are actually the strongest indicator by absolute value for defenders</li>
     <li>The negative correlation for rebounds reflects that the more times a defender has rebounded the ball out of their defensive 50, the more times the ball has entered their defensive 50. This leads me to think that defense is more about control of possession on the ground than it is about the stats of your defenders</li>
     <li>Surprisingly, clearances didn't seem to matter for midfielders. This could be because I lacked the granularity to understand the type of clearance that occurred, or it could be because success is much more about controlling possession in your part of the ground: a clearance reflects your ability to win the ball from a stoppage, but not necessarily whether or not possession has been kept or where the clearance took place.</li>
     </ul>
@@ -733,7 +733,17 @@ full_name	games_played	impact_score<br>
 26	Jayden Short	69	0.239432<br>
     </div>
 </details>
-  <p>Overall, the players here make sense. The only table that looks out of place is the rucks, and this is probably due to a combination of how much the model likes rucks and how some rucks, especially secondary rucks, play a large amount of time forward. Overall, the ruck position does not contribute a huge amount to the model (analysis below showed that each team has 1-1.5 rucks each game) that this sanity check made me comfortable enough to proceed.</p>
+  <p>
+  Overall, the players here make sense, especially forwards:
+</p>
+<ul>
+  <li>The model loves forwards who contribute goals and goal assists (Jeremy Cameron, Toby Greene)</li>
+  <li>Midfielders who impact the scoreboard are rated highly: Marcus Bontempelli is rated the highest impact player of all players, with Christian Petracca also rated highly</li>
+  <li>The defenders ranked highly also pass the sense check: nobody is going to argue against Harris Andrews</li>
+</ul>
+<p>
+  The only table that looks out of place is the rucks, and this is probably due to a combination of how much the model likes rucks and how some rucks, especially secondary rucks, play a large amount of time forward. Overall, the ruck position does not contribute a huge amount to the model (analysis below showed that each team has 1–1.5 rucks each game) that this sanity check made me comfortable enough to proceed.
+</p>
 
   <h2>Step 5: Polynomial Regression</h2>
   <p>
@@ -1214,7 +1224,7 @@ Confusion matrix:<br>
 
   <h2>Findings & Next Steps</h2>
   <p>
-    What does this mean? Well, firstly the polynomial has a ~2% better prediction rate: not massive, but not nothing. The confusion matrix tells us that the difference was 13 games.
+    What does this mean? Well, firstly the polynomial model predicts the winner 65.8% of the time and the logistic model predicts the winner 63.7% of the time. So, the polynomial model is better: not massive, but not nothing. The confusion matrix tells us that the difference was 13 games.
   </p>
   <p>
     Overall, this means that the model we created does slightly better than the initial simplistic top down model that we created. This is based purely on the playing history of each player involved and does not include any of the most relevant variables identified in the initial model (home ground advantage, age profiles).
