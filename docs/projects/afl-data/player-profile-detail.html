@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Detailed analysis – El Punce</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Bigfoot pop-up footnotes  (CSS + JS) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot-default.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot.min.js"></script>
+  <script>bigfoot.default();</script>
+
+  <link rel="icon" href="/assets/images/sabinicon.png" type="image/png">
+</head>
+<body>
+
+  <!-- MAIN NAV BAR (simple, four links) -->
+  <nav class="nav-container">
+    <div class="nav-inner">
+      <a href="/"          class="">Home</a>
+      <a href="/about/"    class="">About</a>
+      <a href="/projects/" class="active">Projects</a>
+      <a href="/thoughts/" class="">Thoughts</a>
+    </div>
+  </nav>
+    <nav class="breadcrumb">
+      <a href="/projects/">Projects</a> &nbsp;›&nbsp;
+      <a href="/projects/afl-data/">Footy Numbers</a>
+    </nav>
+  
+
+  <main>
+    <div class="page-box">
+
+      <h1>Detailed Player Impact Model Analysis</h1>
+      <p>
+        This is the detailed analysis on how I built out a model to predict the winner of a footy game through player impact scores.<br>
+        For information on the exact tables, see <a href="/projects/afl-data/model-step1-detail.html">the step 1 detailed model</a> or <a href="https://github.com/JoeWolfe12/AFL-data-analysis">the github repo</a>.
+      </p>
+
+      <p>
+        It's hard to measure individual player contributions in footy, and unfortunately many metrics are not publicly available. For what is publicly available, I was reliant on fan-made websites that store game data. The AFL website itself is built in a way that does not allow access to any of the actual tables of data: I can only assume this is to soft lock this information behind the paywall of champion data.
+      </p>
+
+      <p>
+        The impact of this is that it's much harder for an amateur to put together a model, or analyse player stats like it is for a sport like cricket (statsguru being a prime example). There are some numbers I didn't have access to that could have made a difference to the overall model, so without dwelling too much on it, below are some of the metrics that were not captured:
+      </p>
+      <ul>
+        <li>Metres gained</li>
+        <li>Position on field when different actions (disposals, tackles, marks) occurred</li>
+        <li>Contests won and participated in</li>
+        <li>Effectiveness and distance of kicks and handballs</li>
+        <li>Position played during the game (not just the position the player is listed at)</li>
+      </ul>
+
+      <p>
+        Where I think this had the biggest impact was in being able to evaluate the performance of defenders. Not being able to pick up how many times a defender was beaten in a true one on one, or how effectively they were able to use the ball amongst other things means that the model will just to have some limitations.<br>
+        In saying that, we did have plenty of data to work through.
+      </p>
+
+      <details class="table-accordion">
+        <summary>Python: Imports and Data Load</summary>
+        <pre>
+# Import libraries and create initial DataFrames
+import pandas as pd
+import numpy as np
+import re
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, roc_auc_score, confusion_matrix
+        </pre>
+      </details>
+
+      <details class="table-accordion">
+        <summary>Python: Helper Functions</summary>
+        <pre>
+# Helper function to sort rounds
+def get_round_order(row):
+    if not row['round'] or pd.isnull(row['round']):
+        return None
+    match = re.match(r'R(\d+)$', row['round'])
+    if match:
+        return int(match.group(1))
+    finals_order = {'REF': 100, 'RQF': 101, 'RSF': 102, 'RPF': 103, 'RGF': 104}
+    code = row['round'][1:]
+    return finals_order.get(code, 999)
+
+# Helper: assign position group
+h_cutoff = 195
+def assign_position_group(row):
+    pos = row['position'].lower().replace(' ', '') if row['position'] else ''
+    if 'defender' in pos:
+        if row['height_cm'] is not None and row['height_cm'] >= 195:
+            return ['tall_defender']
+        elif row['height_cm'] is not None and row['height_cm'] < 195:
+            return ['small_defender']
+        else:
+            return ['small_defender']
+    if pos == 'midfield,forward':
+        return ['midfield,forward']
+    return pos.split(',') if pos else []
+
+# Win/loss assignment
+def get_team_win(row):
+    if row['team_id'] == row['home_team_id']:
+        return 1 if row['home_result'] == 'W' else 0
+    elif row['team_id'] == row['away_team_id']:
+        return 1 if row['away_result'] == 'W' else 0
+    else:
+        return None
+        </pre>
+      </details>
+
+      <details class="table-accordion">
+        <summary>Python: Load &amp; Clean Data</summary>
+        <pre>
+players = pd.read_sql('SELECT id as player_id, full_name, height_cm, position FROM players', engine)
+player_game_stats = pd.read_sql('SELECT * FROM player_game_stats', engine)
+games = pd.read_sql('SELECT id AS game_id, season_year, round, game_date, home_team_id, away_team_id, home_result, away_result FROM games', engine)
+games['round_number'] = games.apply(get_round_order, axis=1)
+
+def custom_position_split(pos_str):
+    if not pos_str or pd.isnull(pos_str):
+        return []
+    pos_str = pos_str.lower().replace(' ', '')
+    if pos_str == 'midfield,forward':
+        return ['midfield,forward']
+    return pos_str.split(',')
+
+players['position_group'] = players.apply(assign_position_group, axis=1)
+players_exploded = players.explode('position_group')
+players_exploded = players_exploded[players_exploded['position_group'] != '']
+
+pgs = player_game_stats.merge(
+    games[['game_id', 'home_team_id', 'away_team_id', 'home_result', 'away_result']],
+    on='game_id', how='left'
+)
+pgs = pgs.merge(
+    players_exploded[['player_id', 'position_group']],
+    on='player_id', how='left'
+)
+
+pgs['pct_contested'] = pgs['contested_possessions'] / pgs['disposals']
+pgs['pct_kicks'] = pgs['kicks'] / pgs['disposals']
+pgs.loc[pgs['disposals'] == 0, 'pct_contested'] = None
+pgs.loc[pgs['disposals'] == 0, 'pct_kicks'] = None
+
+stat_cols = [
+    'kicks', 'marks', 'handballs', 'goals', 'behinds', 'hit_outs', 'tackles',
+    'rebounds', 'inside_50', 'clearances', 'clangers', 'frees_for', 'frees_against',
+    'contested_possessions', 'uncontested_possessions', 'contested_marks', 'marks_inside_50',
+    'one_percenters', 'bounces', 'goal_assists', 'pct_contested', 'pct_kicks'
+]
+        </pre>
+      </details>
+
+      <p>Before building the main model, I quickly checked the raw correlation of each variable to winning. This isn't enough for good prediction but sanity checks variable relevance.</p>
+      <details class="table-accordion">
+        <summary>Python: Variable Correlation vs Winning</summary>
+        <pre>
+# Build out a dataframe
+positions = pgs['position_group'].unique()
+correlation_results = []
+for pos in positions:
+    pgs_pos = pgs[pgs['position_group'] == pos]
+    if len(pgs_pos) < 30: continue  
+    for stat in stat_cols:
+        if stat in pgs_pos.columns:
+            vals = pgs_pos[stat].dropna()
+            if len(vals.unique()) > 1:
+                corr = pgs_pos[stat].corr(pgs_pos['won'])
+                correlation_results.append({'position_group': pos, 'stat': stat, 'correlation': corr, 'n_games': len(pgs_pos)})
+cor_df = pd.DataFrame(correlation_results)
+cor_df = cor_df.sort_values(['position_group', 'correlation'], ascending=[True, False])
+display(cor_df)
+        </pre>
+        <div class="code-output">
+Output: <br>
+[Table showing correlations, as previously listed in your document.]
+        </div>
+      </details>
+
+      <h2>Logistic Regression by Role</h2>
+      <p>
+        Next: I used logistic regression for each role. This allowed me to see what stats had the biggest impact on winning for a given position.
+      </p>
+      <details class="table-accordion">
+        <summary>Python: Logistic Regression per Role</summary>
+        <pre>
+# For each role conduct logistic regression
+roles = ['forward', 'midfield', 'midfield,forward', 'ruck', 'tall_defender', 'small_defender']
+role_coef_dict = {}
+for role in roles:
+    pgs_role = pgs[pgs['position_group'] == role].dropna(subset=stat_cols + ['won'])
+    if len(pgs_role) < 50: continue
+    X = pgs_role[stat_cols].fillna(0)
+    y = pgs_role['won']
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_scaled, y)
+    coefs = pd.Series(model.coef_[0], index=stat_cols)
+    coefs = coefs.sort_values(key=np.abs, ascending=False)
+    top = coefs.head(25)
+    role_coef_dict[role] = top
+    print(f"\n{role.upper()} TOP COEFFICIENTS:\n")
+    display(top)
+        </pre>
+        <div class="code-output">
+Output:<br>
+<strong>FORWARD TOP COEFFICIENTS:</strong>
+<br>
+goals (0.3479), goal_assists (0.2437), kicks (0.2101), clangers (-0.1351), hit_outs (0.1041), ...
+<br>
+<strong>MIDFIELD TOP COEFFICIENTS:</strong>
+<br>
+goal_assists (0.2316), kicks (0.2198), clangers (-0.2058), goals (0.1723), rebounds (-0.1495), ...
+<br>
+etc. (see document for full coefficients per role)
+        </div>
+      </details>
+
+      <h3>Top 5 Players per Role: Logistic Regression Model (2022–2025)</h3>
+      <details class="table-accordion">
+        <summary>Python: Calculate Top Players (Logistic Model)</summary>
+        <pre>
+[Python code for scoring & grouping players by average impact_score (min 15 games)]
+        </pre>
+        <div class="code-output">
+Output:<br>
+<b>Forwards:</b> Jeremy Cameron, Toby Greene, Charlie Curnow, Taylor Walker, Tom Hawkins<br>
+<b>Midfields:</b> Marcus Bontempelli, Christian Petracca, Zach Merrett, Chad Warner, Hugh McCluggage<br>
+<b>Mid/Forwards:</b> Kyle Langford, Shai Bolton, Errol Gulden, Dustin Martin, Jamie Elliott<br>
+<b>Rucks:</b> Tim English, Luke Jackson, Hayden McLean, Rowan Marshall, Sean Darcy<br>
+<b>Tall Defenders:</b> Harris Andrews, Mark Blicavs, Tom Barrass, Brennan Cox, Jacob Weitering<br>
+<b>Small Defenders:</b> Jason Johannisen, Callum Wilkie, Darcy Byrne-Jones, Bradley Hill, Jayden Short
+        </div>
+      </details>
+
+      <h2>Polynomial Model</h2>
+      <p>
+        The next step was polynomial regression with L1 regularisation. This allows the model to use combinations of variables, but prevents overfitting by zeroing less important ones. This model takes much longer to train.
+      </p>
+      <details class="table-accordion">
+        <summary>Python: Polynomial Model by Role (L1 regularised)</summary>
+        <pre>
+# Polynomial regression analysis with L1 regularisation (degree 2)
+[Python code: transform with PolynomialFeatures, fit LogisticRegressionCV(penalty="l1"), extract coefs]
+        </pre>
+        <div class="code-output">
+Output:<br>
+<b>FORWARD – TOP POLYNOMIAL COEFFICIENTS:</b><br>
+goals (0.3347), goal_assists (0.2313), clangers (-0.0678), handballs (0.0637), ...<br>
+<b>MIDFIELD – TOP POLYNOMIAL COEFFICIENTS:</b><br>
+goal_assists (0.1811), goals (0.1658), kicks (0.1222), clangers (-0.1218), ...<br>
+(etc. for other roles; see full table above.)
+        </div>
+      </details>
+
+      <h3>Top 5 Players per Role: Polynomial Model (2022–2025)</h3>
+      <details class="table-accordion">
+        <summary>Python: Top Players by Polynomial Model</summary>
+        <pre>
+[Python: same grouping by average impact_score (min 10 games), but use polynomial coefs/features]
+        </pre>
+        <div class="code-output">
+Output:<br>
+<b>Forwards:</b> Jeremy Cameron, Toby Greene, Taylor Walker, Charlie Curnow, Tom Lynch<br>
+<b>Midfields:</b> Marcus Bontempelli, Christian Petracca, Zach Merrett, Chad Warner, Hugh McCluggage<br>
+<b>Mid/Forwards:</b> Kyle Langford, Shai Bolton, Errol Gulden, Josh Dunkley, Patrick Dangerfield<br>
+<b>Rucks:</b> Tim English, Luke Jackson, Rowan Marshall, Sean Darcy, Hayden McLean<br>
+<b>Tall Defenders:</b> Mark Blicavs, Kieren Briggs, Harris Andrews, Brennan Cox, Tom Barrass<br>
+<b>Small Defenders:</b> Jason Johannisen, Bradley Hill, Sam Reid, Darcy Byrne-Jones, Jayden Short
+        </div>
+      </details>
+
+      <h3>Summary Table: Players in Both Top 5s</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Players in Both Top 5</th>
+            <th>Only in Logistic</th>
+            <th>Only in Polynomial</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Forwards</td>
+            <td>Cameron, Greene, Walker, Curnow</td>
+            <td>Hawkins</td>
+            <td>Lynch</td>
+          </tr>
+          <tr>
+            <td>Midfields</td>
+            <td>Bontempelli, Petracca, Merrett, Warner, McCluggage</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>Mid/Forwards</td>
+            <td>Langford, Bolton, Gulden</td>
+            <td>Martin, Elliott</td>
+            <td>Dunkley, Dangerfield</td>
+          </tr>
+          <tr>
+            <td>Rucks</td>
+            <td>English, Jackson, Marshall, Darcy, McLean</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>Tall Defenders</td>
+            <td>Andrews, Blicavs, Barrass, Cox</td>
+            <td>Weitering</td>
+            <td>Briggs</td>
+          </tr>
+          <tr>
+            <td>Small Defenders</td>
+            <td>Johannisen, Byrne-Jones, Hill, Short</td>
+            <td>Wilkie</td>
+            <td>S. Reid</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        After creating the two models and running sanity checks on both the stats and the player outputs, I moved to actual match prediction.
+      </p>
+
+      <details class="table-accordion">
+        <summary>Python: Build Team Impact, Predict Games, Evaluate Models</summary>
+        <pre>
+# Code for scoring, rolling impact averages, merging into teams, then predicting winners (see above for details)
+        </pre>
+        <div class="code-output">
+Output:<br>
+<b>Logistic:</b><br>
+Accuracy: 0.637<br>
+ROC AUC: 0.708<br>
+Confusion matrix:<br>
+[[121 166] [60 276]]<br>
+<b>Polynomial:</b><br>
+Accuracy: 0.658<br>
+ROC AUC: 0.714<br>
+Confusion matrix:<br>
+[[131 156] [57 279]]<br>
+        </div>
+      </details>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Accuracy Score</th>
+            <th>ROC AUC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Home team only</td>
+            <td>56.6%</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Top-down (Model v1)</td>
+            <td>61.7%</td>
+            <td>0.672</td>
+          </tr>
+          <tr>
+            <td>Player-based sum (Model v2a)</td>
+            <td>63.7%</td>
+            <td>0.708</td>
+          </tr>
+          <tr>
+            <td>Player-based sum (Model v2b)</td>
+            <td>65.8%</td>
+            <td>0.714</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        In summary: The polynomial player model provides a small boost in predictive power (roughly +2% accuracy) compared to a basic logistic version. That's not massive, and comes at a big cost in complexity and runtime. Further analysis is needed, especially combining this with top-down factors like age and ground advantage.<br>
+        <br>
+        <i>
+          Next: I'll look at age profiles and home ground advantage—two variables that were highly relevant in the simpler first model.
+        </i>
+      </p>
+
+      <hr>
+      <small>
+        [1]: <a href="https://www.youtube.com/watch?v=zEmi05AAVe8" target="_blank">Eric Bana AFL joke reference</a>
+      </small>
+    </div>
+  </main>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
