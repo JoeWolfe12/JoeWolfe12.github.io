@@ -1,0 +1,306 @@
+---
+layout: default
+title: Detailed analysis
+permalink: /projects/afl-data/player-profile-step2
+---
+<div class="page-box">
+  <h1>Bottom-Up Player Impact Model – Step 2</h1>
+  <p>
+    Our previous model (<a href="https://elpunce.com/projects/afl-data/model-step1-detail.html" target="_blank" rel="noopener">detailed breakdown</a>)
+    took a top-down approach to predict the winner of a game. The model didn't care about any individual players on any of the teams—it predicted the winner based on the history of the team, home ground advantage, team stability, and the average age of the players.
+  </p>
+  <p>
+    This attempt at building out a model takes a bottom-up approach: what if we evaluate every player on every team, add them all together, and then make a prediction about which team will win? Just like my previous model, if you want to see the detailed work (i.e. Python code, more detailed analysis on the analytical tools used) feel free to look <a href="https://elpunce.com/projects/afl-data/" target="_blank" rel="noopener">here</a> or at the <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">GitHub repo</a>.
+  </p>
+
+  <p>
+    <strong>A player is good if they contribute to their team winning the game.</strong>
+  </p>
+  <p>
+    To figure this out, I split every player into different role types<sup id="fnref1"><a href="#fn1" rel="footnote">1</a></sup>—different types of players will contribute in different ways. We’d expect midfielders to average more disposals than forwards, and forwards to average more goals than midfielders.<sup id="fnref2"><a href="#fn2" rel="footnote">2</a></sup>
+  </p>
+  <p>
+    I then looked at every individual game performance from 2010 to round 9, 2025 and analysed which numbers for each role type correlate with wins. This means I can get an idea of what a "good" player looks like for each role type. Below is a list of the top 5 attributes by absolute correlation value for each role type (some variables have a negative correlation):<sup id="fnref3"><a href="#fn3" rel="footnote">3</a></sup>
+  </p>
+
+  <h2>Top 5 Attributes by Role</h2>
+  <p><em>Select a role to view the top 5 attributes below.</em></p>
+  <div id="attribute-chart"></div>
+
+  <p>
+    What did this tell me? At a minimum, it all seemed to make sense:
+    <ul>
+      <li>Goals are good, goal assists also</li>
+      <li>Clangers seem to be quite important, especially so for defenders</li>
+      <li>It was interesting that hitouts were nowhere to be seen for rucks (though the importance of hitouts and their lack of correlation to clearances is something that has been looked at in detail)</li>
+      <li>Rebounds were negatively correlated for defenders—which seems strange at first, but a high amount of rebounds probably reflects a lot of inside 50s conceded</li>
+    </ul>
+  </p>
+  <p>
+    After identifying what a "good" player looks like, I also used a polynomial model that looked at whether combinations of the variables have a larger effect (i.e., if a forward has high amounts of tackles combined with goals, does this give a better idea of what correlates to a win?). There was a slight uplift in using the polynomial model (see <a href="https://elpunce.com/projects/afl-data/model-step2-detail.html" target="_blank" rel="noopener">detailed page</a>), but it was not a game changer.
+  </p>
+
+  <p>
+    My models now allowed me to identify what a good player in different role types looks like. I wanted to sense-check whether my model actually identifies good players, so I ran the model over the last few years to see the players it spat out as the top 5 in each position<sup id="fnref4"><a href="#fn4" rel="footnote">4</a></sup>:
+  </p>
+
+  <h2>Top 5 Players by Role (2022–2025)</h2>
+  <p><em>Select a role to view the top 5 players below.</em></p>
+  <div id="players-chart"></div>
+
+  <p>
+    Honestly, I was pretty happy with how this picked up the players widely attributed as the best players over the past few years. There was a bit of noise:
+    <ul>
+      <li>Players who switch roles between midfield and defence, but are listed as defenders, seem to score very highly</li>
+      <li>The models like rucks who score goals: some highly-rated ruckmen are actually players who spend enough time forward to almost be considered a forward, not a ruck. I decided to leave them as ruckmen per their listed position</li>
+      <li>My models really like players who either score goals, or assist goals</li>
+    </ul>
+  </p>
+
+  <p>
+    The way my models worked is that each player’s impact score is averaged over recent games (using a rolling window) to reflect current form, then summed at the team level to predict results. For each game, the models predict whether the home team wins, based on the combined recent performance of all players selected for that game.
+  </p>
+
+  <p>
+    The real question was: could they predict a winner of a game? Well, after running the model through the history of games the best model was able to predict a winner 65.8% of the time! This meant that, at a minimum, we didn't go backwards from our simplistic top down model:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Performance (Accuracy %)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Home team only</td>
+        <td>56.6</td>
+      </tr>
+      <tr>
+        <td>Top-down (Model v1)</td>
+        <td>61.7</td>
+      </tr>
+      <tr>
+        <td>Player-based sum (Model v2a)</td>
+        <td>63.7</td>
+      </tr>
+      <tr>
+        <td>Player-based sum (Model v2b)</td>
+        <td>65.8</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Next up: looking at age profiles and home ground advantage in more detail.
+  </p>
+
+  <h2>Footnotes</h2>
+  <ol>
+    <li id="fn1">Source was Kaggle dataset augmented by footywire and Wikipedia. <a href="#fnref1">↩</a></li>
+    <li id="fn2">The different roles are: forward, midfield, midfield/forward, ruck, tall defender, and small defender. <a href="#fnref2">↩</a></li>
+    <li id="fn3">I am limited by only being able to rely on publicly listed numbers; for the full list of attributes, see the <a href="https://elpunce.com/projects/afl-data/model-step2-detail.html" target="_blank" rel="noopener">detailed project page</a>. If I had access to Champion Data, I’d be able to put more attributes into the model. <a href="#fnref3">↩</a></li>
+    <li id="fn4">Games from 2022 to round 8, 2025 inclusive, and to avoid one-off performances skewing results, only players with 15+ games are included. <a href="#fnref4">↩</a></li>
+  </ol>
+</div>
+
+<!-- Chart.js and JS for attribute/player role charts -->
+<script>
+const top5Attributes = {
+  "forward": [
+    { attr: "goals", val: 0.334683 },
+    { attr: "goal_assists", val: 0.231253 },
+    { attr: "clangers", val: -0.067788 },
+    { attr: "handballs", val: 0.063715 },
+    { attr: "hit_outs", val: 0.062232 }
+  ],
+  "midfield": [
+    { attr: "goal_assists", val: 0.181146 },
+    { attr: "goals", val: 0.165754 },
+    { attr: "kicks", val: 0.122247 },
+    { attr: "clangers", val: -0.121756 },
+    { attr: "rebounds", val: -0.112623 }
+  ],
+  "midfield,forward": [
+    { attr: "goals", val: 0.213675 },
+    { attr: "goal_assists", val: 0.177952 },
+    { attr: "rebounds", val: -0.136174 },
+    { attr: "clangers", val: -0.132545 },
+    { attr: "marks", val: 0.126077 }
+  ],
+  "ruck": [
+    { attr: "goal_assists", val: 0.174342 },
+    { attr: "goals", val: 0.156079 },
+    { attr: "clangers", val: -0.133843 },
+    { attr: "marks_inside_50", val: 0.114077 },
+    { attr: "inside_50", val: 0.106943 }
+  ],
+  "tall_defender": [
+    { attr: "clangers", val: -0.194810 },
+    { attr: "kicks", val: 0.124370 },
+    { attr: "uncontested_possessions", val: 0.093394 },
+    { attr: "behinds", val: -0.077723 },
+    { attr: "clearances one_percenters", val: -0.076865 }
+  ],
+  "small_defender": [
+    { attr: "clangers", val: -0.202948 },
+    { attr: "marks", val: 0.154267 },
+    { attr: "rebounds", val: -0.130001 },
+    { attr: "kicks", val: 0.090703 },
+    { attr: "uncontested_possessions", val: 0.089549 }
+  ]
+};
+
+const top5Players = {
+  "forward": [
+    { name: "Jeremy Cameron", score: 0.795362 },
+    { name: "Toby Greene", score: 0.651204 },
+    { name: "Taylor Walker", score: 0.581902 },
+    { name: "Charlie Curnow", score: 0.570294 },
+    { name: "Tom Lynch", score: 0.525674 }
+  ],
+  "midfield": [
+    { name: "Marcus Bontempelli", score: 0.769842 },
+    { name: "Christian Petracca", score: 0.684768 },
+    { name: "Zach Merrett", score: 0.529695 },
+    { name: "Chad Warner", score: 0.496455 },
+    { name: "Hugh McCluggage", score: 0.433423 }
+  ],
+  "midfield,forward": [
+    { name: "Kyle Langford", score: 0.690060 },
+    { name: "Shai Bolton", score: 0.622008 },
+    { name: "Errol Gulden", score: 0.563588 },
+    { name: "Josh Dunkley", score: 0.554034 },
+    { name: "Patrick Dangerfield", score: 0.553518 }
+  ],
+  "ruck": [
+    { name: "Tim English", score: 0.447355 },
+    { name: "Luke Jackson", score: 0.365542 },
+    { name: "Rowan Marshall", score: 0.227793 },
+    { name: "Sean Darcy", score: 0.191768 },
+    { name: "Hayden McLean", score: 0.178117 }
+  ],
+  "tall_defender": [
+    { name: "Mark Blicavs", score: 0.570801 },
+    { name: "Kieren Briggs", score: 0.429148 },
+    { name: "Harris Andrews", score: 0.224022 },
+    { name: "Brennan Cox", score: 0.172461 },
+    { name: "Tom Barrass", score: 0.165290 }
+  ],
+  "small_defender": [
+    { name: "Jason Johannisen", score: 0.350530 },
+    { name: "Bradley Hill", score: 0.333770 },
+    { name: "Sam Reid", score: 0.326004 },
+    { name: "Darcy Byrne-Jones", score: 0.319055 },
+    { name: "Jayden Short", score: 0.273209 }
+  ]
+};
+
+function createDropdown(id, options, defaultOption, onChange) {
+  const select = document.createElement('select');
+  select.className = 'afl-select';
+  options.forEach(opt => {
+    const option = document.createElement('option');
+    option.value = opt.value;
+    option.text = opt.label;
+    if (opt.value === defaultOption) option.selected = true;
+    select.appendChild(option);
+  });
+  select.addEventListener('change', e => onChange(e.target.value));
+  document.getElementById(id).appendChild(select);
+}
+
+function renderAttributeChart(role) {
+  const ctx = document.getElementById('afl-attr-canvas').getContext('2d');
+  if (window.attrChart) window.attrChart.destroy();
+  const data = top5Attributes[role];
+  window.attrChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.attr),
+      datasets: [{
+        label: 'Correlation Value',
+        data: data.map(d => d.val),
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: false }
+      }
+    }
+  });
+}
+
+function renderPlayersChart(role) {
+  const ctx = document.getElementById('afl-players-canvas').getContext('2d');
+  if (window.playersChart) window.playersChart.destroy();
+  const data = top5Players[role];
+  window.playersChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.name),
+      datasets: [{
+        label: 'Impact Score',
+        data: data.map(d => d.score),
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: false }
+      }
+    }
+  });
+}
+
+// Render dropdowns and canvases
+window.addEventListener('DOMContentLoaded', function () {
+  // Top attributes
+  document.getElementById('attribute-chart').innerHTML = `
+    <div style="display:flex;align-items:center;gap:1em;">
+      <label for="afl-attr-select"><strong>Role:</strong></label>
+      <span id="afl-attr-select"></span>
+    </div>
+    <canvas id="afl-attr-canvas" height="250"></canvas>
+  `;
+  createDropdown('afl-attr-select', [
+    { value: 'forward', label: 'Forward' },
+    { value: 'midfield', label: 'Midfield' },
+    { value: 'midfield,forward', label: 'Midfield/Forward' },
+    { value: 'ruck', label: 'Ruck' },
+    { value: 'tall_defender', label: 'Tall Defender' },
+    { value: 'small_defender', label: 'Small Defender' }
+  ], 'forward', renderAttributeChart);
+  renderAttributeChart('forward');
+
+  // Top players
+  document.getElementById('players-chart').innerHTML = `
+    <div style="display:flex;align-items:center;gap:1em;">
+      <label for="afl-players-select"><strong>Role:</strong></label>
+      <span id="afl-players-select"></span>
+    </div>
+    <canvas id="afl-players-canvas" height="250"></canvas>
+  `;
+  createDropdown('afl-players-select', [
+    { value: 'forward', label: 'Forward' },
+    { value: 'midfield', label: 'Midfield' },
+    { value: 'midfield,forward', label: 'Midfield/Forward' },
+    { value: 'ruck', label: 'Ruck' },
+    { value: 'tall_defender', label: 'Tall Defender' },
+    { value: 'small_defender', label: 'Small Defender' }
+  ], 'forward', renderPlayersChart);
+  renderPlayersChart('forward');
+});
+</script>
+</body>
+</html>
