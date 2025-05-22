@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Detailed Player Based Model Analysis
-permalink: /projects/afl-data//player-profile-step2-detail
+permalink: /projects/afl-data/player-profiles-step2-detail
 ---
 <div class="page-box">
   <h1>Detailed Player-Based Model Analysis</h1>
@@ -248,139 +248,139 @@ cor_df = cor_df.sort_values(['position_group', 'correlation'], ascending=[True, 
 display(cor_df)
     </pre>
     <div class="output-block">
-      position_group	stat	correlation	n_games
-47	forward	goals	0.192528	37192
-63	forward	goal_assists	0.156550	37192
-60	forward	marks_inside_50	0.150516	37192
-44	forward	kicks	0.137904	37192
-45	forward	marks	0.130274	37192
-52	forward	inside_50	0.102904	37192
-58	forward	uncontested_possessions	0.102205	37192
-57	forward	contested_possessions	0.092329	37192
-48	forward	behinds	0.085630	37192
-59	forward	contested_marks	0.068345	37192
-46	forward	handballs	0.052672	37192
-62	forward	bounces	0.039222	37192
-65	forward	pct_kicks	0.039027	37192
-55	forward	frees_for	0.038486	37192
-50	forward	tackles	0.037842	37192
-53	forward	clearances	0.033818	37192
-49	forward	hit_outs	0.022139	37192
-61	forward	one_percenters	0.016072	37192
-56	forward	frees_against	0.010589	37192
-54	forward	clangers	-0.007225	37192
-64	forward	pct_contested	-0.009810	37192
-51	forward	rebounds	-0.041622	37192
-41	midfield	goal_assists	0.148017	33329
-25	midfield	goals	0.125454	33329
-22	midfield	kicks	0.123685	33329
-30	midfield	inside_50	0.116824	33329
-36	midfield	uncontested_possessions	0.114595	33329
-23	midfield	marks	0.100351	33329
-38	midfield	marks_inside_50	0.090943	33329
-24	midfield	handballs	0.057341	33329
-35	midfield	contested_possessions	0.054930	33329
-31	midfield	clearances	0.051917	33329
-26	midfield	behinds	0.051516	33329
-43	midfield	pct_kicks	0.045757	33329
-40	midfield	bounces	0.038246	33329
-28	midfield	tackles	0.025016	33329
-39	midfield	one_percenters	0.021745	33329
-33	midfield	frees_for	0.020420	33329
-37	midfield	contested_marks	0.017653	33329
-34	midfield	frees_against	-0.009734	33329
-27	midfield	hit_outs	-0.020974	33329
-29	midfield	rebounds	-0.029358	33329
-32	midfield	clangers	-0.031324	33329
-42	midfield	pct_contested	-0.032378	33329
-69	midfield,forward	goals	0.154562	11948
-85	midfield,forward	goal_assists	0.143661	11948
-74	midfield,forward	inside_50	0.127743	11948
-66	midfield,forward	kicks	0.126037	11948
-82	midfield,forward	marks_inside_50	0.121143	11948
-67	midfield,forward	marks	0.117091	11948
-80	midfield,forward	uncontested_possessions	0.100398	11948
-79	midfield,forward	contested_possessions	0.088488	11948
-70	midfield,forward	behinds	0.078000	11948
-75	midfield,forward	clearances	0.063081	11948
-68	midfield,forward	handballs	0.059741	11948
-72	midfield,forward	tackles	0.057019	11948
-81	midfield,forward	contested_marks	0.054358	11948
-87	midfield,forward	pct_kicks	0.039066	11948
-77	midfield,forward	frees_for	0.030456	11948
-83	midfield,forward	one_percenters	0.027199	11948
-71	midfield,forward	hit_outs	0.019268	11948
-78	midfield,forward	frees_against	0.018816	11948
-84	midfield,forward	bounces	0.018481	11948
-86	midfield,forward	pct_contested	0.000865	11948
-76	midfield,forward	clangers	-0.007308	11948
-73	midfield,forward	rebounds	-0.053896	11948
-91	ruck	goals	0.127212	8653
-104	ruck	marks_inside_50	0.117023	8653
-107	ruck	goal_assists	0.108774	8653
-96	ruck	inside_50	0.086927	8653
-89	ruck	marks	0.085218	8653
-102	ruck	uncontested_possessions	0.080268	8653
-88	ruck	kicks	0.076709	8653
-103	ruck	contested_marks	0.068988	8653
-101	ruck	contested_possessions	0.060850	8653
-90	ruck	handballs	0.059462	8653
-92	ruck	behinds	0.057509	8653
-94	ruck	tackles	0.041473	8653
-97	ruck	clearances	0.029260	8653
-93	ruck	hit_outs	0.025160	8653
-106	ruck	bounces	0.021075	8653
-99	ruck	frees_for	0.012647	8653
-109	ruck	pct_kicks	0.012421	8653
-100	ruck	frees_against	0.009886	8653
-105	ruck	one_percenters	-0.008933	8653
-108	ruck	pct_contested	-0.018678	8653
-98	ruck	clangers	-0.020620	8653
-95	ruck	rebounds	-0.045676	8653
-1	small_defender	marks	0.112236	40427
-14	small_defender	uncontested_possessions	0.097265	40427
-19	small_defender	goal_assists	0.092625	40427
-0	small_defender	kicks	0.089843	40427
-8	small_defender	inside_50	0.083993	40427
-3	small_defender	goals	0.078471	40427
-21	small_defender	pct_kicks	0.048824	40427
-16	small_defender	marks_inside_50	0.043093	40427
-18	small_defender	bounces	0.039560	40427
-4	small_defender	behinds	0.030272	40427
-15	small_defender	contested_marks	0.028492	40427
-13	small_defender	contested_possessions	0.024958	40427
-2	small_defender	handballs	0.024836	40427
-17	small_defender	one_percenters	0.008515	40427
-9	small_defender	clearances	0.004235	40427
-6	small_defender	tackles	-0.001136	40427
-5	small_defender	hit_outs	-0.003036	40427
-11	small_defender	frees_for	-0.013880	40427
-7	small_defender	rebounds	-0.025851	40427
-20	small_defender	pct_contested	-0.035344	40427
-12	small_defender	frees_against	-0.039762	40427
-10	small_defender	clangers	-0.071719	40427
-124	tall_defender	uncontested_possessions	0.101743	9406
-111	tall_defender	marks	0.100411	9406
-110	tall_defender	kicks	0.090199	9406
-118	tall_defender	inside_50	0.068144	9406
-129	tall_defender	goal_assists	0.050193	9406
-112	tall_defender	handballs	0.046438	9406
-125	tall_defender	contested_marks	0.039914	9406
-123	tall_defender	contested_possessions	0.039235	9406
-131	tall_defender	pct_kicks	0.032112	9406
-119	tall_defender	clearances	0.024921	9406
-113	tall_defender	goals	0.021450	9406
-128	tall_defender	bounces	0.021236	9406
-126	tall_defender	marks_inside_50	0.018500	9406
-115	tall_defender	hit_outs	0.016520	9406
-116	tall_defender	tackles	0.004533	9406
-127	tall_defender	one_percenters	-0.003850	9406
-114	tall_defender	behinds	-0.004652	9406
-117	tall_defender	rebounds	-0.008726	9406
-121	tall_defender	frees_for	-0.015003	9406
-130	tall_defender	pct_contested	-0.047533	9406
-122	tall_defender	frees_against	-0.056831	9406
-120	tall_defender	clangers	-0.073359	9406
+      position_group	stat	correlation	n_games<br>
+47	forward	goals	0.192528	37192<br>
+63	forward	goal_assists	0.156550	37192<br>
+60	forward	marks_inside_50	0.150516	37192<br>
+44	forward	kicks	0.137904	37192<br>
+45	forward	marks	0.130274	37192<br>
+52	forward	inside_50	0.102904	37192<br>
+58	forward	uncontested_possessions	0.102205	37192<br>
+57	forward	contested_possessions	0.092329	37192<br>
+48	forward	behinds	0.085630	37192<br>
+59	forward	contested_marks	0.068345	37192<br>
+46	forward	handballs	0.052672	37192<br>
+62	forward	bounces	0.039222	37192<br>
+65	forward	pct_kicks	0.039027	37192<br>
+55	forward	frees_for	0.038486	37192<br>
+50	forward	tackles	0.037842	37192<br>
+53	forward	clearances	0.033818	37192<br>
+49	forward	hit_outs	0.022139	37192<br>
+61	forward	one_percenters	0.016072	37192<br>
+56	forward	frees_against	0.010589	37192<br>
+54	forward	clangers	-0.007225	37192<br>
+64	forward	pct_contested	-0.009810	37192<br>
+51	forward	rebounds	-0.041622	37192<br>
+41	midfield	goal_assists	0.148017	33329<br>
+25	midfield	goals	0.125454	33329<br>
+22	midfield	kicks	0.123685	33329<br>
+30	midfield	inside_50	0.116824	33329<br>
+36	midfield	uncontested_possessions	0.114595	33329<br>
+23	midfield	marks	0.100351	33329<br>
+38	midfield	marks_inside_50	0.090943	33329<br>
+24	midfield	handballs	0.057341	33329<br>
+35	midfield	contested_possessions	0.054930	33329<br>
+31	midfield	clearances	0.051917	33329<br>
+26	midfield	behinds	0.051516	33329<br>
+43	midfield	pct_kicks	0.045757	33329<br>
+40	midfield	bounces	0.038246	33329<br>
+28	midfield	tackles	0.025016	33329<br>
+39	midfield	one_percenters	0.021745	33329<br>
+33	midfield	frees_for	0.020420	33329<br>
+37	midfield	contested_marks	0.017653	33329<br>
+34	midfield	frees_against	-0.009734	33329<br>
+27	midfield	hit_outs	-0.020974	33329<br>
+29	midfield	rebounds	-0.029358	33329<br>
+32	midfield	clangers	-0.031324	33329<br>
+42	midfield	pct_contested	-0.032378	33329<br>
+69	midfield,forward	goals	0.154562	11948<br>
+85	midfield,forward	goal_assists	0.143661	11948<br>
+74	midfield,forward	inside_50	0.127743	11948<br>
+66	midfield,forward	kicks	0.126037	11948<br>
+82	midfield,forward	marks_inside_50	0.121143	11948<br>
+67	midfield,forward	marks	0.117091	11948<br>
+80	midfield,forward	uncontested_possessions	0.100398	11948<br>
+79	midfield,forward	contested_possessions	0.088488	11948<br>
+70	midfield,forward	behinds	0.078000	11948<br>
+75	midfield,forward	clearances	0.063081	11948<br>
+68	midfield,forward	handballs	0.059741	11948<br>
+72	midfield,forward	tackles	0.057019	11948<br>
+81	midfield,forward	contested_marks	0.054358	11948<br>
+87	midfield,forward	pct_kicks	0.039066	11948<br>
+77	midfield,forward	frees_for	0.030456	11948<br>
+83	midfield,forward	one_percenters	0.027199	11948<br>
+71	midfield,forward	hit_outs	0.019268	11948<br>
+78	midfield,forward	frees_against	0.018816	11948<br>
+84	midfield,forward	bounces	0.018481	11948<br>
+86	midfield,forward	pct_contested	0.000865	11948<br>
+76	midfield,forward	clangers	-0.007308	11948<br>
+73	midfield,forward	rebounds	-0.053896	11948<br>
+91	ruck	goals	0.127212	8653<br>
+104	ruck	marks_inside_50	0.117023	8653<br>
+107	ruck	goal_assists	0.108774	8653<br>
+96	ruck	inside_50	0.086927	8653<br>
+89	ruck	marks	0.085218	8653<br>
+102	ruck	uncontested_possessions	0.080268	8653<br>
+88	ruck	kicks	0.076709	8653<br>
+103	ruck	contested_marks	0.068988	8653<br>
+101	ruck	contested_possessions	0.060850	8653<br>
+90	ruck	handballs	0.059462	8653<br>
+92	ruck	behinds	0.057509	8653<br>
+94	ruck	tackles	0.041473	8653<br>
+97	ruck	clearances	0.029260	8653<br>
+93	ruck	hit_outs	0.025160	8653<br>
+106	ruck	bounces	0.021075	8653<br>
+99	ruck	frees_for	0.012647	8653<br>
+109	ruck	pct_kicks	0.012421	8653<br>
+100	ruck	frees_against	0.009886	8653<br>
+105	ruck	one_percenters	-0.008933	8653<br>
+108	ruck	pct_contested	-0.018678	8653<br>
+98	ruck	clangers	-0.020620	8653<br>
+95	ruck	rebounds	-0.045676	8653<br>
+1	small_defender	marks	0.112236	40427<br>
+14	small_defender	uncontested_possessions	0.097265	40427<br>
+19	small_defender	goal_assists	0.092625	40427<br>
+0	small_defender	kicks	0.089843	40427<br>
+8	small_defender	inside_50	0.083993	40427<br>
+3	small_defender	goals	0.078471	40427<br>
+21	small_defender	pct_kicks	0.048824	40427<br>
+16	small_defender	marks_inside_50	0.043093	40427<br>
+18	small_defender	bounces	0.039560	40427<br>
+4	small_defender	behinds	0.030272	40427<br>
+15	small_defender	contested_marks	0.028492	40427<br>
+13	small_defender	contested_possessions	0.024958	40427<br>
+2	small_defender	handballs	0.024836	40427<br>
+17	small_defender	one_percenters	0.008515	40427<br>
+9	small_defender	clearances	0.004235	40427<br>
+6	small_defender	tackles	-0.001136	40427<br>
+5	small_defender	hit_outs	-0.003036	40427<br>
+11	small_defender	frees_for	-0.013880	40427<br>
+7	small_defender	rebounds	-0.025851	40427<br>
+20	small_defender	pct_contested	-0.035344	40427<br>
+12	small_defender	frees_against	-0.039762	40427<br>
+10	small_defender	clangers	-0.071719	40427<br>
+124	tall_defender	uncontested_possessions	0.101743	9406<br>
+111	tall_defender	marks	0.100411	9406<br>
+110	tall_defender	kicks	0.090199	9406<br>
+118	tall_defender	inside_50	0.068144	9406<br>
+129	tall_defender	goal_assists	0.050193	9406<br>
+112	tall_defender	handballs	0.046438	9406<br>
+125	tall_defender	contested_marks	0.039914	9406<br>
+123	tall_defender	contested_possessions	0.039235	9406<br>
+131	tall_defender	pct_kicks	0.032112	9406<br>
+119	tall_defender	clearances	0.024921	9406<br>
+113	tall_defender	goals	0.021450	9406<br>
+128	tall_defender	bounces	0.021236	9406<br>
+126	tall_defender	marks_inside_50	0.018500	9406<br>
+115	tall_defender	hit_outs	0.016520	9406<br>
+116	tall_defender	tackles	0.004533	9406<br>
+127	tall_defender	one_percenters	-0.003850	9406<br>
+114	tall_defender	behinds	-0.004652	9406<br>
+117	tall_defender	rebounds	-0.008726	9406<br>
+121	tall_defender	frees_for	-0.015003	9406<br>
+130	tall_defender	pct_contested	-0.047533	9406<br>
+122	tall_defender	frees_against	-0.056831	9406<br>
+120	tall_defender	clangers	-0.073359	9406<br>
     </div>
   </details>
 
@@ -425,161 +425,161 @@ for role in roles:
     display(top)
     </pre>
     <div class="output-block">
-      FORWARD TOP COEFFICIENTS:
-
-goals                      0.347901
-goal_assists               0.243662
-kicks                      0.210102
-clangers                  -0.135133
-hit_outs                   0.104088
-pct_kicks                 -0.094317
-rebounds                  -0.086666
-one_percenters             0.082434
-tackles                    0.075196
-marks                      0.071431
-frees_against              0.067163
-contested_marks           -0.064314
-handballs                  0.053409
-contested_possessions     -0.043774
-inside_50                  0.038728
-behinds                    0.038466
-frees_for                 -0.037641
-bounces                    0.035718
-marks_inside_50            0.034736
-pct_contested              0.028714
-uncontested_possessions   -0.014579
-clearances                -0.012778
-dtype: float64
-
-MIDFIELD TOP COEFFICIENTS:
-
-goal_assists               0.231588
-kicks                      0.219833
-clangers                  -0.205788
-goals                      0.172308
-rebounds                  -0.149507
-handballs                  0.144405
-frees_against              0.079802
-marks                      0.074292
-hit_outs                  -0.065315
-one_percenters             0.054485
-pct_kicks                  0.052715
-marks_inside_50            0.048549
-inside_50                  0.042139
-contested_possessions     -0.041258
-uncontested_possessions   -0.033528
-contested_marks           -0.031725
-frees_for                 -0.029882
-tackles                    0.021074
-bounces                    0.020144
-pct_contested             -0.017252
-behinds                    0.004137
-clearances                -0.000296
-dtype: float64
-
-MIDFIELD,FORWARD TOP COEFFICIENTS:
-
-kicks                      0.308666
-goals                      0.229733
-goal_assists               0.204094
-clangers                  -0.176739
-rebounds                  -0.166119
-marks                      0.157714
-uncontested_possessions   -0.124452
-frees_against              0.104067
-tackles                    0.099372
-handballs                  0.094109
-inside_50                  0.079391
-pct_kicks                 -0.067313
-one_percenters             0.064515
-frees_for                 -0.051057
-contested_marks           -0.042489
-behinds                    0.041297
-contested_possessions     -0.040445
-bounces                   -0.029178
-marks_inside_50            0.025667
-clearances                -0.016799
-pct_contested              0.007066
-hit_outs                   0.005046
-dtype: float64
-
-RUCK TOP COEFFICIENTS:
-
-clangers                  -0.205513
-goals                      0.181325
-frees_against              0.167900
-goal_assists               0.166375
-kicks                      0.109148
-inside_50                  0.095953
-marks_inside_50            0.090534
-rebounds                  -0.089856
-handballs                  0.089803
-tackles                    0.078813
-uncontested_possessions    0.067930
-frees_for                 -0.061949
-hit_outs                   0.045791
-contested_marks            0.039146
-marks                     -0.036270
-contested_possessions     -0.033594
-pct_kicks                 -0.023715
-bounces                    0.022851
-pct_contested              0.022254
-clearances                 0.009097
-behinds                    0.007468
-one_percenters             0.000218
-dtype: float64
-
-TALL_DEFENDER TOP COEFFICIENTS:
-
-clangers                  -0.221088
-contested_possessions      0.217576
-uncontested_possessions    0.154013
-rebounds                  -0.133178
-pct_contested             -0.118049
-behinds                   -0.083222
-frees_for                 -0.078578
-pct_kicks                  0.063846
-goal_assists               0.056581
-inside_50                  0.054168
-marks                      0.042912
-handballs                 -0.041781
-marks_inside_50            0.031637
-one_percenters             0.030460
-clearances                 0.030272
-frees_against              0.029218
-hit_outs                   0.019895
-kicks                      0.016463
-goals                     -0.009797
-bounces                    0.004444
-contested_marks           -0.004231
-tackles                   -0.000437
-dtype: float64
-
-SMALL_DEFENDER TOP COEFFICIENTS:
-
-clangers                  -0.238748
-uncontested_possessions    0.230713
-contested_possessions      0.164866
-rebounds                  -0.161714
-marks                      0.139264
-goal_assists               0.137522
-goals                      0.133785
-handballs                 -0.125773
-one_percenters             0.078544
-clearances                -0.077347
-frees_for                 -0.075558
-frees_against              0.056599
-marks_inside_50           -0.050515
-pct_kicks                  0.050279
-bounces                    0.041601
-inside_50                  0.038532
-contested_marks           -0.021458
-hit_outs                  -0.014475
-kicks                      0.014461
-pct_contested              0.011044
-tackles                   -0.002341
-behinds                   -0.002283
-dtype: float64
+      FORWARD TOP COEFFICIENTS:<br>
+<br>
+goals                      0.347901<br>
+goal_assists               0.243662<br>
+kicks                      0.210102<br>
+clangers                  -0.135133<br>
+hit_outs                   0.104088<br>
+pct_kicks                 -0.094317<br>
+rebounds                  -0.086666<br>
+one_percenters             0.082434<br>
+tackles                    0.075196<br>
+marks                      0.071431<br>
+frees_against              0.067163<br>
+contested_marks           -0.064314<br>
+handballs                  0.053409<br>
+contested_possessions     -0.043774<br>
+inside_50                  0.038728<br>
+behinds                    0.038466<br>
+frees_for                 -0.037641<br>
+bounces                    0.035718<br>
+marks_inside_50            0.034736<br>
+pct_contested              0.028714<br>
+uncontested_possessions   -0.014579<br>
+clearances                -0.012778<br>
+dtype: float64<br>
+<br>
+MIDFIELD TOP COEFFICIENTS:<br>
+<br>
+goal_assists               0.231588<br>
+kicks                      0.219833<br>
+clangers                  -0.205788<br>
+goals                      0.172308<br>
+rebounds                  -0.149507<br>
+handballs                  0.144405<br>
+frees_against              0.079802<br>
+marks                      0.074292<br>
+hit_outs                  -0.065315<br>
+one_percenters             0.054485<br>
+pct_kicks                  0.052715<br>
+marks_inside_50            0.048549<br>
+inside_50                  0.042139<br>
+contested_possessions     -0.041258<br>
+uncontested_possessions   -0.033528<br>
+contested_marks           -0.031725<br>
+frees_for                 -0.029882<br>
+tackles                    0.021074<br>
+bounces                    0.020144<br>
+pct_contested             -0.017252<br>
+behinds                    0.004137<br>
+clearances                -0.000296<br>
+dtype: float64<br>
+<br>
+MIDFIELD,FORWARD TOP COEFFICIENTS:<br>
+<br>
+kicks                      0.308666<br>
+goals                      0.229733<br>
+goal_assists               0.204094<br>
+clangers                  -0.176739<br>
+rebounds                  -0.166119<br>
+marks                      0.157714<br>
+uncontested_possessions   -0.124452<br>
+frees_against              0.104067<br>
+tackles                    0.099372<br>
+handballs                  0.094109<br>
+inside_50                  0.079391<br>
+pct_kicks                 -0.067313<br>
+one_percenters             0.064515<br>
+frees_for                 -0.051057<br>
+contested_marks           -0.042489<br>
+behinds                    0.041297<br>
+contested_possessions     -0.040445<br>
+bounces                   -0.029178<br>
+marks_inside_50            0.025667<br>
+clearances                -0.016799<br>
+pct_contested              0.007066<br>
+hit_outs                   0.005046<br>
+dtype: float64<br>
+<br>
+RUCK TOP COEFFICIENTS:<br>
+<br>
+clangers                  -0.205513<br>
+goals                      0.181325<br>
+frees_against              0.167900<br>
+goal_assists               0.166375<br>
+kicks                      0.109148<br>
+inside_50                  0.095953<br>
+marks_inside_50            0.090534<br>
+rebounds                  -0.089856<br>
+handballs                  0.089803<br>
+tackles                    0.078813<br>
+uncontested_possessions    0.067930<br>
+frees_for                 -0.061949<br>
+hit_outs                   0.045791<br>
+contested_marks            0.039146<br>
+marks                     -0.036270<br>
+contested_possessions     -0.033594<br>
+pct_kicks                 -0.023715<br>
+bounces                    0.022851<br>
+pct_contested              0.022254<br>
+clearances                 0.009097<br>
+behinds                    0.007468<br>
+one_percenters             0.000218<br>
+dtype: float64<br>
+<br>
+TALL_DEFENDER TOP COEFFICIENTS:<br>
+<br>
+clangers                  -0.221088<br>
+contested_possessions      0.217576<br>
+uncontested_possessions    0.154013<br>
+rebounds                  -0.133178<br>
+pct_contested             -0.118049<br>
+behinds                   -0.083222<br>
+frees_for                 -0.078578<br>
+pct_kicks                  0.063846<br>
+goal_assists               0.056581<br>
+inside_50                  0.054168<br>
+marks                      0.042912<br>
+handballs                 -0.041781<br>
+marks_inside_50            0.031637<br>
+one_percenters             0.030460<br>
+clearances                 0.030272<br>
+frees_against              0.029218<br>
+hit_outs                   0.019895<br>
+kicks                      0.016463<br>
+goals                     -0.009797<br>
+bounces                    0.004444<br>
+contested_marks           -0.004231<br>
+tackles                   -0.000437<br>
+dtype: float64<br>
+<br>
+SMALL_DEFENDER TOP COEFFICIENTS:<br>
+<br>
+clangers                  -0.238748<br>
+uncontested_possessions    0.230713<br>
+contested_possessions      0.164866<br>
+rebounds                  -0.161714<br>
+marks                      0.139264<br>
+goal_assists               0.137522<br>
+goals                      0.133785<br>
+handballs                 -0.125773<br>
+one_percenters             0.078544<br>
+clearances                -0.077347<br>
+frees_for                 -0.075558<br>
+frees_against              0.056599<br>
+marks_inside_50           -0.050515<br>
+pct_kicks                  0.050279<br>
+bounces                    0.041601<br>
+inside_50                  0.038532<br>
+contested_marks           -0.021458<br>
+hit_outs                  -0.014475<br>
+kicks                      0.014461<br>
+pct_contested              0.011044<br>
+tackles                   -0.002341<br>
+behinds                   -0.002283<br>
+dtype: float64<br>
     </div>
   </details>
 
@@ -659,54 +659,48 @@ for role in roles:
     role_data_dict[role] = df_role.copy()
 </pre>
     <div class="output-block">
-      Top 5 FORWARDS:
-full_name	games_played	impact_score
-85	Jeremy Cameron	75	0.683134
-39	Toby Greene	71	0.564521
-21	Charlie Curnow	76	0.549450
-123	Taylor Walker	66	0.525210
-87	Tom Hawkins	57	0.478029
-
-Top 5 MIDFIELDS:
-full_name	games_played	impact_score
-90	Marcus Bontempelli	72	0.695789
-3	Christian Petracca	70	0.579013
-61	Zach Merrett	71	0.418897
-10	Chad Warner	78	0.401900
-16	Hugh McCluggage	84	0.345121
-
-Top 5 MIDFIELD,FORWARDS:
-full_name	games_played	impact_score
-21	Kyle Langford	57	0.572625
-7	Shai Bolton	75	0.458497
-3	Errol Gulden	75	0.453700
-18	Dustin Martin	42	0.421031
-89	Jamie Elliott	66	0.417258
-
-Top 5 RUCKS:
-full_name	games_played	impact_score
-17	Tim English	70	0.380390
-22	Luke Jackson	73	0.342759
-2	Hayden McLean	63	0.293929
-15	Rowan Marshall	76	0.260594
-33	Sean Darcy	52	0.197766
-
-Top 5 TALL_DEFENDERS:
-full_name	games_played	impact_score
-2	Harris Andrews	84	0.212034
-20	Mark Blicavs	74	0.211950
-25	Tom Barrass	59	0.158341
-27	Brennan Cox	60	0.149575
-33	Jacob Weitering	74	0.149393
-
-Top 5 SMALL_DEFENDERS:
-full_name	games_played	impact_score
-81	Jason Johannisen	32	0.350372
-68	Callum Wilkie	77	0.291034
-85	Darcy Byrne-Jones	77	0.267349
-66	Bradley Hill	73	0.253701
-26	Jayden Short	69	0.239432
-
+Top 5 FORWARDS:<br>
+full_name	games_played	impact_score<br>
+85	Jeremy Cameron	75	0.683134<br>
+39	Toby Greene	71	0.564521<br>
+21	Charlie Curnow	76	0.549450<br>
+123	Taylor Walker	66	0.525210<br>
+87	Tom Hawkins	57	0.478029<br>
+Top 5 MIDFIELDS:<br>
+full_name	games_played	impact_score<br>
+90	Marcus Bontempelli	72	0.695789<br>
+3	Christian Petracca	70	0.579013<br>
+61	Zach Merrett	71	0.418897<br>
+10	Chad Warner	78	0.401900<br>
+16	Hugh McCluggage	84	0.345121<br>
+Top 5 MIDFIELD,FORWARDS:<br>
+full_name	games_played	impact_score<br>
+21	Kyle Langford	57	0.572625<br>
+7	Shai Bolton	75	0.458497<br>
+3	Errol Gulden	75	0.453700<br>
+18	Dustin Martin	42	0.421031<br>
+89	Jamie Elliott	66	0.417258<br>
+Top 5 RUCKS:<br>
+full_name	games_played	impact_score<br>
+17	Tim English	70	0.380390<br>
+22	Luke Jackson	73	0.342759<br>
+2	Hayden McLean	63	0.293929<br>
+15	Rowan Marshall	76	0.260594<br>
+33	Sean Darcy	52	0.197766<br>
+Top 5 TALL_DEFENDERS:<br>
+full_name	games_played	impact_score<br>
+2	Harris Andrews	84	0.212034<br>
+20	Mark Blicavs	74	0.211950<br>
+25	Tom Barrass	59	0.158341<br>
+27	Brennan Cox	60	0.149575<br>
+33	Jacob Weitering	74	0.149393<br>
+Top 5 SMALL_DEFENDERS:<br>
+full_name	games_played	impact_score<br>
+81	Jason Johannisen	32	0.350372<br>
+68	Callum Wilkie	77	0.291034<br>
+85	Darcy Byrne-Jones	77	0.267349<br>
+66	Bradley Hill	73	0.253701<br>
+26	Jayden Short	69	0.239432<br>
     </div>
 </details>
   <p>Overall, the players here make sense. The only table that looks out of place is the rucks, and this is probably due to a combination of how much the model likes rucks and how some rucks, especially secondary rucks, play a large amount of time forward. Overall, the ruck position does not contribute a huge amount to the model (analysis below showed that each team has 1-1.5 rucks each game) that this sanity check made me comfortable enough to proceed.</p>
@@ -765,143 +759,138 @@ for role in roles:
     display(coefs.head(20))
     </pre>
     <div class="output-block">
-        FORWARD – TOP POLYNOMIAL COEFFICIENTS
-goals                            0.334683
-goal_assists                     0.231253
-clangers                        -0.067788
-handballs                        0.063715
-hit_outs                         0.062232
-uncontested_possessions          0.058576
-tackles                          0.055132
-kicks                            0.049312
-one_percenters                   0.044489
-marks uncontested_possessions    0.043815
-inside_50                        0.040811
-handballs rebounds              -0.035239
-rebounds                        -0.034399
-behinds                          0.030854
-rebounds clearances             -0.023333
-tackles rebounds                -0.023150
-goals uncontested_possessions    0.020610
-marks_inside_50^2                0.018670
-kicks marks                      0.018287
-clearances bounces              -0.017653
-dtype: float64
-
-MIDFIELD – TOP POLYNOMIAL COEFFICIENTS
-goal_assists               0.181146
-goals                      0.165754
-kicks                      0.122247
-clangers                  -0.121756
-rebounds                  -0.112623
-uncontested_possessions    0.082957
-inside_50                  0.052205
-marks_inside_50            0.039336
-marks^2                    0.037272
-marks                      0.029332
-one_percenters             0.023973
-goal_assists^2             0.023064
-tackles^2                  0.018552
-clearances^2               0.018058
-clangers pct_contested     0.012714
-goals pct_kicks           -0.011911
-handballs^2                0.010904
-behinds bounces            0.009817
-pct_kicks^2                0.009563
-hit_outs                  -0.009298
-dtype: float64
-
-MIDFIELD,FORWARD – TOP POLYNOMIAL COEFFICIENTS
-goals                               0.213675
-goal_assists                        0.177952
-rebounds                           -0.136174
-clangers                           -0.132545
-marks                               0.126077
-kicks                               0.101396
-inside_50                           0.092780
-tackles                             0.080299
-frees_against                       0.051929
-tackles rebounds                   -0.046828
-one_percenters                      0.038642
-rebounds uncontested_possessions   -0.037359
-marks bounces                       0.034929
-bounces                            -0.034156
-handballs rebounds                 -0.033478
-contested_possessions^2             0.033198
-behinds                             0.033062
-clangers frees_against              0.032618
-marks uncontested_possessions       0.032588
-marks handballs                     0.031925
-dtype: float64
-
-RUCK – TOP POLYNOMIAL COEFFICIENTS
-goal_assists                        0.174342
-goals                               0.156079
-clangers                           -0.133843
-marks_inside_50                     0.114077
-inside_50                           0.106943
-rebounds                           -0.101528
-tackles                             0.090398
-hit_outs contested_possessions     -0.067115
-handballs                           0.066664
-rebounds one_percenters             0.060327
-uncontested_possessions             0.058935
-clangers frees_against              0.058635
-frees_against                       0.058267
-behinds bounces                     0.053974
-handballs rebounds                 -0.053969
-hit_outs                            0.047599
-clearances frees_for               -0.045181
-hit_outs tackles                    0.044156
-kicks behinds                      -0.040616
-clangers uncontested_possessions   -0.037899
-dtype: float64
-
-TALL_DEFENDER – TOP POLYNOMIAL COEFFICIENTS
-clangers                                -0.194810
-kicks                                    0.124370
-uncontested_possessions                  0.093394
-behinds                                 -0.077723
-clearances one_percenters               -0.076865
-inside_50                                0.068478
-rebounds                                -0.064861
-bounces pct_kicks                       -0.060919
-frees_against contested_marks            0.057097
-clearances                              -0.054256
-inside_50 clangers                       0.052059
-inside_50 bounces                        0.050424
-clearances bounces                      -0.049639
-marks                                    0.047705
-one_percenters^2                        -0.046565
-hit_outs marks_inside_50                 0.046276
-contested_possessions marks_inside_50    0.046087
-contested_marks pct_contested           -0.042541
-one_percenters                           0.041194
-clearances uncontested_possessions      -0.040564
-dtype: float64
-
-SMALL_DEFENDER – TOP POLYNOMIAL COEFFICIENTS
-clangers                  -0.202948
-marks                      0.154267
-rebounds                  -0.130001
-kicks                      0.090703
-uncontested_possessions    0.089549
-goal_assists               0.086309
-one_percenters             0.074818
-pct_kicks                  0.064863
-inside_50                  0.059688
-hit_outs                  -0.056637
-goals                      0.053613
-clearances                -0.052260
-contested_possessions      0.045059
-frees_for                 -0.040788
-kicks rebounds            -0.037522
-marks_inside_50           -0.031150
-frees_against              0.029558
-goals goal_assists         0.027522
-bounces                    0.027352
-goals clangers             0.026069
-dtype: float64
+FORWARD – TOP POLYNOMIAL COEFFICIENTS<br>
+goals                            0.334683<br>
+goal_assists                     0.231253<br>
+clangers                        -0.067788<br>
+handballs                        0.063715<br>
+hit_outs                         0.062232<br>
+uncontested_possessions          0.058576<br>
+tackles                          0.055132<br>
+kicks                            0.049312<br>
+one_percenters                   0.044489<br>
+marks uncontested_possessions    0.043815<br>
+inside_50                        0.040811<br>
+handballs rebounds              -0.035239<br>
+rebounds                        -0.034399<br>
+behinds                          0.030854<br>
+rebounds clearances             -0.023333<br>
+tackles rebounds                -0.023150<br>
+goals uncontested_possessions    0.020610<br>
+marks_inside_50^2                0.018670<br>
+kicks marks                      0.018287<br>
+clearances bounces              -0.017653<br>
+dtype: float64<br>
+MIDFIELD – TOP POLYNOMIAL COEFFICIENTS<br>
+goal_assists               0.181146<br>
+goals                      0.165754<br>
+kicks                      0.122247<br>
+clangers                  -0.121756<br>
+rebounds                  -0.112623<br>
+uncontested_possessions    0.082957<br>
+inside_50                  0.052205<br>
+marks_inside_50            0.039336<br>
+marks^2                    0.037272<br>
+marks                      0.029332<br>
+one_percenters             0.023973<br>
+goal_assists^2             0.023064<br>
+tackles^2                  0.018552<br>
+clearances^2               0.018058<br>
+clangers pct_contested     0.012714<br>
+goals pct_kicks           -0.011911<br>
+handballs^2                0.010904<br>
+behinds bounces            0.009817<br>
+pct_kicks^2                0.009563<br>
+hit_outs                  -0.009298<br>
+dtype: float64<br>
+MIDFIELD,FORWARD – TOP POLYNOMIAL COEFFICIENTS<br>
+goals                               0.213675<br>
+goal_assists                        0.177952<br>
+rebounds                           -0.136174<br>
+clangers                           -0.132545<br>
+marks                               0.126077<br>
+kicks                               0.101396<br>
+inside_50                           0.092780<br>
+tackles                             0.080299<br>
+frees_against                       0.051929<br>
+tackles rebounds                   -0.046828<br>
+one_percenters                      0.038642<br>
+rebounds uncontested_possessions   -0.037359<br>
+marks bounces                       0.034929<br>
+bounces                            -0.034156<br>
+handballs rebounds                 -0.033478<br>
+contested_possessions^2             0.033198<br>
+behinds                             0.033062<br>
+clangers frees_against              0.032618<br>
+marks uncontested_possessions       0.032588<br>
+marks handballs                     0.031925<br>
+dtype: float64<br>
+RUCK – TOP POLYNOMIAL COEFFICIENTS<br>
+goal_assists                        0.174342<br>
+goals                               0.156079<br>
+clangers                           -0.133843<br>
+marks_inside_50                     0.114077<br>
+inside_50                           0.106943<br>
+rebounds                           -0.101528<br>
+tackles                             0.090398<br>
+hit_outs contested_possessions     -0.067115<br>
+handballs                           0.066664<br>
+rebounds one_percenters             0.060327<br>
+uncontested_possessions             0.058935<br>
+clangers frees_against              0.058635<br>
+frees_against                       0.058267<br>
+behinds bounces                     0.053974<br>
+handballs rebounds                 -0.053969<br>
+hit_outs                            0.047599<br>
+clearances frees_for               -0.045181<br>
+hit_outs tackles                    0.044156<br>
+kicks behinds                      -0.040616<br>
+clangers uncontested_possessions   -0.037899<br>
+dtype: float64<br>
+TALL_DEFENDER – TOP POLYNOMIAL COEFFICIENTS<br>
+clangers                                -0.194810<br>
+kicks                                    0.124370<br>
+uncontested_possessions                  0.093394<br>
+behinds                                 -0.077723<br>
+clearances one_percenters               -0.076865<br>
+inside_50                                0.068478<br>
+rebounds                                -0.064861<br>
+bounces pct_kicks                       -0.060919<br>
+frees_against contested_marks            0.057097<br>
+clearances                              -0.054256<br>
+inside_50 clangers                       0.052059<br>
+inside_50 bounces                        0.050424<br>
+clearances bounces                      -0.049639<br>
+marks                                    0.047705<br>
+one_percenters^2                        -0.046565<br>
+hit_outs marks_inside_50                 0.046276<br>
+contested_possessions marks_inside_50    0.046087<br>
+contested_marks pct_contested           -0.042541<br>
+one_percenters                           0.041194<br>
+clearances uncontested_possessions      -0.040564<br>
+dtype: float64<br>
+SMALL_DEFENDER – TOP POLYNOMIAL COEFFICIENTS<br>
+clangers                  -0.202948<br>
+marks                      0.154267<br>
+rebounds                  -0.130001<br>
+kicks                      0.090703<br>
+uncontested_possessions    0.089549<br>
+goal_assists               0.086309<br>
+one_percenters             0.074818<br>
+pct_kicks                  0.064863<br>
+inside_50                  0.059688<br>
+hit_outs                  -0.056637<br>
+goals                      0.053613<br>
+clearances                -0.052260<br>
+contested_possessions      0.045059<br>
+frees_for                 -0.040788<br>
+kicks rebounds            -0.037522<br>
+marks_inside_50           -0.031150<br>
+frees_against              0.029558<br>
+goals goal_assists         0.027522<br>
+bounces                    0.027352<br>
+goals clangers             0.026069<br>
+dtype: float64<br>
     </div>
   </details>
   <p>The output doesn't tell me too much different from the initial logistic regression. Clangers are important for defenders and goals/goal assists are important for everyone else</p>
@@ -972,53 +961,48 @@ for role in roles:
     display(player_scores.head(5)[['full_name', 'games_played', 'impact_score']])
     </pre>
     <div class="output-block">
-        Top 10 FORWARDS:
-full_name	games_played	impact_score
-85	Jeremy Cameron	75	0.795362
-39	Toby Greene	71	0.651204
-123	Taylor Walker	66	0.581902
-21	Charlie Curnow	76	0.570294
-266	Tom Lynch	23	0.525674
-
-Top 10 MIDFIELDS:
-full_name	games_played	impact_score
-90	Marcus Bontempelli	72	0.769842
-3	Christian Petracca	70	0.684768
-61	Zach Merrett	71	0.529695
-10	Chad Warner	78	0.496455
-16	Hugh McCluggage	84	0.433423
-
-Top 10 MIDFIELD,FORWARDS:
-full_name	games_played	impact_score
-21	Kyle Langford	57	0.690060
-7	Shai Bolton	75	0.622008
-3	Errol Gulden	75	0.563588
-6	Josh Dunkley	82	0.554034
-34	Patrick Dangerfield	60	0.553518
-
-Top 10 RUCKS:
-full_name	games_played	impact_score
-17	Tim English	70	0.447355
-22	Luke Jackson	73	0.365542
-15	Rowan Marshall	76	0.227793
-33	Sean Darcy	52	0.191768
-2	Hayden McLean	63	0.178117
-
-Top 10 TALL_DEFENDERS:
-full_name	games_played	impact_score
-20	Mark Blicavs	74	0.570801
-10	Kieren Briggs	52	0.429148
-2	Harris Andrews	84	0.224022
-27	Brennan Cox	60	0.172461
-25	Tom Barrass	59	0.165290
-
-Top 10 SMALL_DEFENDERS:
-full_name	games_played	impact_score
-81	Jason Johannisen	32	0.350530
-66	Bradley Hill	73	0.333770
-216	Sam Reid	18	0.326004
-85	Darcy Byrne-Jones	77	0.319055
-26	Jayden Short	69	0.273209
+Top 10 FORWARDS:<br>
+full_name	games_played	impact_score<br>
+85	Jeremy Cameron	75	0.795362<br>
+39	Toby Greene	71	0.651204<br>
+123	Taylor Walker	66	0.581902<br>
+21	Charlie Curnow	76	0.570294<br>
+266	Tom Lynch	23	0.525674<br>
+Top 10 MIDFIELDS:<br>
+full_name	games_played	impact_score<br>
+90	Marcus Bontempelli	72	0.769842<br>
+3	Christian Petracca	70	0.684768<br>
+61	Zach Merrett	71	0.529695<br>
+10	Chad Warner	78	0.496455<br>
+16	Hugh McCluggage	84	0.433423<br>
+Top 10 MIDFIELD,FORWARDS:<br>
+full_name	games_played	impact_score<br>
+21	Kyle Langford	57	0.690060<br>
+7	Shai Bolton	75	0.622008<br>
+3	Errol Gulden	75	0.563588<br>
+6	Josh Dunkley	82	0.554034<br>
+34	Patrick Dangerfield	60	0.553518<br>
+Top 10 RUCKS:<br>
+full_name	games_played	impact_score<br>
+17	Tim English	70	0.447355<br>
+22	Luke Jackson	73	0.365542<br>
+15	Rowan Marshall	76	0.227793<br>
+33	Sean Darcy	52	0.191768<br>
+2	Hayden McLean	63	0.178117<br>
+Top 10 TALL_DEFENDERS:<br>
+full_name	games_played	impact_score<br>
+20	Mark Blicavs	74	0.570801<br>
+10	Kieren Briggs	52	0.429148<br>
+2	Harris Andrews	84	0.224022<br>
+27	Brennan Cox	60	0.172461<br>
+25	Tom Barrass	59	0.165290<br>
+Top 10 SMALL_DEFENDERS:<br>
+full_name	games_played	impact_score<br>
+81	Jason Johannisen	32	0.350530<br>
+66	Bradley Hill	73	0.333770<br>
+216	Sam Reid	18	0.326004<br>
+85	Darcy Byrne-Jones	77	0.319055<br>
+26	Jayden Short	69	0.273209<br>
 
     </div>
 </details>
@@ -1183,20 +1167,18 @@ print(confusion_matrix(y_test, y_pred))
 
     </pre>
     <div class="output-block">
-Logistic:
-Accuracy: 0.637
-ROC AUC: 0.708
-Confusion matrix:
-[[121 166]
- [ 60 276]]
- 
-Output:
-Polynomial
-Accuracy: 0.658
-ROC AUC: 0.714
-Confusion matrix:
-[[131 156]
- [ 57 279]]
+Logistic:<br>
+Accuracy: 0.637<br>
+ROC AUC: 0.708<br>
+Confusion matrix:<br>
+[[121 166]<br>
+ [ 60 276]]<br>
+Polynomial<br>
+Accuracy: 0.658<br>
+ROC AUC: 0.714<br>
+Confusion matrix:<br>
+[[131 156]<br>
+ [ 57 279]]<br>
     </div>
   </details>
 
