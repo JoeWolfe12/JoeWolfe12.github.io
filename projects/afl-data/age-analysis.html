@@ -182,82 +182,77 @@ const bucketColors = [
 ];
 
 const ageProfileData = {
-  labels: seasons,
-  datasets: [
-    {
-      label: "Under 20",
-      data: u20,
-      borderColor: bucketColors[0],
-      backgroundColor: bucketColors[0],
-      fill: false,
-      tension: 0.35,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 0
-    },
-    {
-      label: "20–23",
-      data: p20_23,
-      borderColor: bucketColors[1],
-      backgroundColor: bucketColors[1],
-      fill: false,
-      tension: 0.35,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 0
-    },
-    {
-      label: "23–26",
-      data: p23_26,
-      borderColor: bucketColors[2],
-      backgroundColor: bucketColors[2],
-      fill: false,
-      tension: 0.35,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 0
-    },
-    {
-      label: "26–30",
-      data: p26_30,
-      borderColor: bucketColors[3],
-      backgroundColor: bucketColors[3],
-      fill: false,
-      tension: 0.35,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 0
-    },
-    {
-      label: "Over 30",
-      data: p30_plus,
-      borderColor: bucketColors[4],
-      backgroundColor: bucketColors[4],
-      fill: false,
-      tension: 0.35,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 0
-    }
-  ]
-};
-s
-new Chart(document.getElementById('ageProfileChart').getContext('2d'), {
-  type: 'line',
-  data: ageProfileData,
-  options: {
-    plugins: {
-      legend: { display: true, position: 'top' }
-    },
-    scales: {
-      x: { title: { display: true, text: 'Season' }},
-      y: {
-        title: { display: true, text: 'Proportion of Players' },
-        min: 0,
-        max: 0.35,
-        ticks: { callback: value => (value*100) + '%' }
+    labels: seasons,
+    datasets: [
+      {
+        label: "Under 20",
+        data: u20,
+        borderColor: bucketColors[0],
+        fill: false,
+        tension: 0.35,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 0
+      },
+      {
+        label: "20–23",
+        data: p20_23,
+        borderColor: bucketColors[1],
+        fill: false,
+        tension: 0.35,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 0
+      },
+      {
+        label: "23–26",
+        data: p23_26,
+        borderColor: bucketColors[2],
+        fill: false,
+        tension: 0.35,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 0
+      },
+      {
+        label: "26–30",
+        data: p26_30,
+        borderColor: bucketColors[3],
+        fill: false,
+        tension: 0.35,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 0
+      },
+      {
+        label: "Over 30",
+        data: p30_plus,
+        borderColor: bucketColors[4],
+        fill: false,
+        tension: 0.35,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 0
+      }
+    ]
+  };
+
+  new Chart(document.getElementById('ageProfileChart').getContext('2d'), {
+    type: 'line',
+    data: ageProfileData,
+    options: {
+      plugins: {
+        legend: { display: true, position: 'top' }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Season' }},
+        y: {
+          title: { display: true, text: 'Proportion of Players' },
+          min: 0,
+          max: 0.35,
+          ticks: { callback: value => (value*100) + '%' }
+        }
       }
     }
-  }
-});
+  });
 </script>
