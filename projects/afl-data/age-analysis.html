@@ -1,0 +1,262 @@
+---
+layout: default
+title: Age Profile Analysis
+permalink: /projects/afl-data/age-analysis
+---
+
+<div class="page-box">
+  <h1>How Does Team Age Profile Affect Winning?</h1>
+  <p>
+    Our initial simple analysis <a href="https://elpunce.com/projects/afl-data/model-step1.html" target="_blank" rel="noopener">here</a> identified that the older the team, the more likely they would win.
+    My underlying theory for why this is the case isn't that older players are necessarily better (though they may be), but rather that teams that tend to be older are more likely to be in a “win now” situation. Once teams no longer feel like they can realistically challenge for a premiership they will start to play kids and look to the draft.
+  </p>
+  <p>
+    In some situations, though, there could be "losing" teams that have a high number of older players—i.e. they are on the way down, haven’t brought the kids in yet, and their average age is high. This theory leaves open the idea that it might not be just the average age, but potentially an age profile, such as having more players in the 24–28 year old bucket, that could be a better indicator of what a winning team looks like.
+  </p>
+  <p>
+    Before getting into the analysis, I wanted to understand the trend of player ages over time. I had a general theory that players were getting older and that 30 years old was no longer considered the cliff in which footy players were put out to pasture (a trend that has played out in other professional sports over the same period).
+  </p>
+  <p>
+    Looking at the numbers, it seems that teams have been getting older:
+    <ul>
+      <li>Average age has risen from ~24.6 to ~25.75 years old</li>
+      <li>Covid does make a couple years look a bit funny, but overall the trend is clear</li>
+    </ul>
+  </p>
+
+  <h2>Average Age by Season</h2>
+  <canvas id="avgAgeChart" width="700" height="320"></canvas>
+
+  <p>
+    Looking at the make up of players over that time, it is almost completely driven by an increase in players over 30, with the average per team going from ~1.7 to ~4 per team per game.
+  </p>
+
+  <h2>Team Age Profile Proportions by Season</h2>
+  <canvas id="ageProfileChart" width="700" height="340"></canvas>
+
+  <p>
+    The biggest drop off over this time was in players aged 20–23. So, footy has been experiencing a consistent aging of players over the last ~15 years or so: the future is not yet now old man.<sup><a href="#footnote1">[1]</a></sup>
+  </p>
+  <p>
+    What does this mean for winning and losing? Well, nothing directly, but what it does tell me is that teams view age less and less as a cut off for whether or not a player can contribute to the team. Teams are more likely to play older 30+ players if they think those players can help them win, and this potentially adds credence to age, or age profiles, being important variables to look at.
+  </p>
+  <p>
+    To begin with, does the older team win more often? Yes! Not only does the older team win more often, but they win 63% of the time: this puts "just pick the older team" up there with all the different models I have looked at so far:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Performance (Accuracy %)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Home team only</td><td>56.6</td></tr>
+      <tr><td>Older team</td><td>63.0</td></tr>
+      <tr><td>Top-down (Model v1)</td><td>61.7</td></tr>
+      <tr><td>Player-based sum (Model v2a)</td><td>63.7</td></tr>
+      <tr><td>Player-based sum (Model v2b)</td><td>65.8</td></tr>
+    </tbody>
+  </table>
+  <p>
+    To dive into the next layer down: is it just the older team, or can the age profile of a team make a difference? And to what extent does being older make a difference, a goal a game, 3 goals a game? To understand these questions I will conduct both logistic and linear regression. One looks at the binary outcome of win/loss (using logistic regression like we have been using previously) and the other looks at the size of victory or defeat as a continuous outcome (linear regression).
+  </p>
+
+  <h2>Starting with logistic regression:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Feature Name</th>
+        <th>Coefficient</th>
+        <th>p-value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Age difference</td><td>0.6556</td><td>&lt;0.001</td></tr>
+      <tr><td>Under 20 (difference)</td><td>-0.3153</td><td>0.004</td></tr>
+      <tr><td>Between 20 &amp; 23 (difference)</td><td>-0.2278</td><td>0.034</td></tr>
+      <tr><td>Between 23 &amp; 26 (difference)</td><td>-0.2309</td><td>0.030</td></tr>
+      <tr><td>Between 26 &amp; 30 (difference)</td><td>-0.2617</td><td>0.014</td></tr>
+      <tr><td>Over 30 (difference)</td><td>-0.4023</td><td>&lt;0.001</td></tr>
+      <tr><td>Average age (raw)</td><td>-0.0050</td><td>0.880</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    What does above tell us? Well:
+    <ul>
+      <li>Age difference matters: Being older than your opponent increases your chance of winning (the only strong positive coefficient).</li>
+      <li>Bucket differences add nothing positive: Once you control for overall age difference, having more players in any specific age group—even the “prime” years—does not improve your odds. In fact, all these coefficients are negative.</li>
+      <li>Absolute age is irrelevant: The average age of a team by itself (without considering the opponent) has no predictive value (coefficient ≈ 0, p = 0.88).</li>
+    </ul>
+  </p>
+
+  <h2>Linear regression:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Feature Name</th>
+        <th>Coefficient</th>
+        <th>p-value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Age difference</td><td>10.91</td><td>&lt;0.001</td></tr>
+      <tr><td>Under 20 (difference)</td><td>-8.41</td><td>&lt;0.001</td></tr>
+      <tr><td>Between 20 &amp; 23 (difference)</td><td>-4.67</td><td>&lt;0.001</td></tr>
+      <tr><td>Between 23 &amp; 26 (difference)</td><td>-4.67</td><td>&lt;0.001</td></tr>
+      <tr><td>Between 26 &amp; 30 (difference)</td><td>-4.53</td><td>&lt;0.001</td></tr>
+      <tr><td>Over 30 (difference)</td><td>-7.16</td><td>&lt;0.001</td></tr>
+      <tr><td>Average age (raw)</td><td>~0</td><td>1.000</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Linear regression tells us the same thing:
+    <ul>
+      <li>Age difference matters: For every year a team is older than its opponent, the average margin increases by nearly 11 points.</li>
+      <li>Team make-up by age buckets, and absolute average age, add no positive value once you know the age difference.</li>
+      <li>All age bucket differences are negative, so, piling up players in any single age range (even “prime” years) doesn’t help beyond simply being older overall.</li>
+    </ul>
+  </p>
+
+  <p>
+    Overall, what this tells us is that age matters, and that it is a good enough blunt instrument that it overrides any and all value of trying to put together a complex model based on different age profiles of different teams.
+  </p>
+  <p>
+    Next up, I will take a close look at home ground advantage.
+  </p>
+  <p>
+    For more information on the notebook used to conduct this analysis, please take a look at the <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">AFL Data Analysis GitHub repository</a>.
+  </p>
+  <hr>
+  <p id="footnote1"><sup>1</sup> <a href="https://www.youtube.com/watch?v=--STz_OByTo" target="_blank" rel="noopener">The future is not yet now, old man.</a></p>
+</div>
+
+
+<script>
+/* Chart 1: Average Age */
+const avgAgeData = {
+  labels: [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],
+  datasets: [{
+    label: 'Average Age',
+    data: [24.6356,24.5082,24.6423,24.82,25.0197,25.1321,25.2144,25.1337,25.0978,25.3111,25.6615,25.4896,25.55,25.6959,25.7499,25.7463],
+    borderColor: '#3366cc',
+    borderWidth: 2.5,
+    fill: false,
+    tension: 0.35,
+    pointRadius: 0,
+    pointHoverRadius: 0
+  }]
+};
+
+new Chart(document.getElementById('avgAgeChart').getContext('2d'), {
+  type: 'line',
+  data: avgAgeData,
+  options: {
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Season' }},
+      y: { title: { display: true, text: 'Average Age' }, min: 24, max: 26 }
+    }
+  }
+});
+
+/* Chart 2: Age Buckets */
+const seasons = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+const u20 =      [0.0802158,0.0957792,0.0948617,0.0720246,0.0662055,0.0661959,0.0589592,0.0687308,0.0780632,0.0669741,0.0481201,0.0604915,0.0556558,0.0627104,0.0586801,0.0786895];
+const p20_23 =   [0.295647,0.294527,0.275253,0.288208,0.268445,0.264011,0.251537,0.245828,0.257905,0.235068,0.243266,0.246592,0.241255,0.213183,0.223448,0.218004];
+const p23_26 =   [0.263941,0.275278,0.295235,0.286232,0.285244,0.279457,0.29787,0.296992,0.269104,0.273825,0.248036,0.27405,0.266073,0.28173,0.268852,0.23913];
+const p26_30 =   [0.282208,0.262291,0.25011,0.256258,0.263395,0.27703,0.276131,0.27635,0.288098,0.296662,0.316779,0.274221,0.297822,0.286881,0.285651,0.29455];
+const p30_plus = [0.0779885,0.0721243,0.0845411,0.0972771,0.116711,0.113305,0.115503,0.112099,0.106829,0.12747,0.143799,0.144646,0.139194,0.155495,0.163368,0.169626];
+
+const bucketColors = [
+  "#ff9900",
+  "#0099c6",
+  "#66aa00",
+  "#dc3912",
+  "#994499"
+];
+
+const ageProfileData = {
+  labels: seasons,
+  datasets: [
+    {
+      label: "Under 20",
+      data: u20,
+      borderColor: bucketColors[0],
+      backgroundColor: bucketColors[0],
+      fill: false,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 0
+    },
+    {
+      label: "20–23",
+      data: p20_23,
+      borderColor: bucketColors[1],
+      backgroundColor: bucketColors[1],
+      fill: false,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 0
+    },
+    {
+      label: "23–26",
+      data: p23_26,
+      borderColor: bucketColors[2],
+      backgroundColor: bucketColors[2],
+      fill: false,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 0
+    },
+    {
+      label: "26–30",
+      data: p26_30,
+      borderColor: bucketColors[3],
+      backgroundColor: bucketColors[3],
+      fill: false,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 0
+    },
+    {
+      label: "Over 30",
+      data: p30_plus,
+      borderColor: bucketColors[4],
+      backgroundColor: bucketColors[4],
+      fill: false,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 0
+    }
+  ]
+};
+s
+new Chart(document.getElementById('ageProfileChart').getContext('2d'), {
+  type: 'line',
+  data: ageProfileData,
+  options: {
+    plugins: {
+      legend: { display: true, position: 'top' }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Season' }},
+      y: {
+        title: { display: true, text: 'Proportion of Players' },
+        min: 0,
+        max: 0.35,
+        ticks: { callback: value => (value*100) + '%' }
+      }
+    }
+  }
+});
+</script>
