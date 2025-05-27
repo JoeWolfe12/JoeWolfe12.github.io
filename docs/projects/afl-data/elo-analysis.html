@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ELO Rating Analysis – El Punce</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Bigfoot pop-up footnotes  (CSS + JS) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot-default.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot.min.js"></script>
+  <script>bigfoot.default();</script>
+
+  <link rel="icon" href="/assets/images/sabinicon.png" type="image/png">
+</head>
+<body>
+
+  <!-- MAIN NAV BAR (simple, four links) -->
+  <nav class="nav-container">
+    <div class="nav-inner">
+      <a href="/"          class="">Home</a>
+      <a href="/about/"    class="">About</a>
+      <a href="/projects/" class="active">Projects</a>
+      <a href="/thoughts/" class="">Thoughts</a>
+    </div>
+  </nav>
+    <nav class="breadcrumb">
+      <a href="/projects/">Projects</a> &nbsp;›&nbsp;
+      <a href="/projects/afl-data/">Footy Numbers</a>
+    </nav>
+  
+
+  <main>
+    <div class="page-box">
+  <h1>ELO</h1>
+  <p>
+    One important factor that I will look at is <a href="https://en.wikipedia.org/wiki/Elo_rating_system" target="_blank" rel="noopener">ELO</a>. Named after Arpad Elo and originally designed for chess, ELO is used to rank relative team strengths in zero sum games (i.e. win or lose). ELO tries to assign every team a rating based on past performance, adjusting those ratings up or down after each game depending on the opponent’s strength and the result. Win against a strong team, your ELO goes up. Lose to a bottom-feeder, your rating goes down. The best part is that the ELO system is self-correcting; teams rise and fall as the season progresses, and the ratings can be used to predict the likely winner of any future matchup.
+  </p>
+  <p>
+    The question is, how well does it work for footy? To test this, I ran a basic ELO algorithm over every AFL result since 2010. After each match, the winning team’s ELO increased and the loser’s dropped, with adjustments based on the margin and opponent’s current rating. Each season I did a soft reset and adjusted every team's ELO towards the average (but not completely). For the detailed breakdown of the model, please see the <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">GitHub repo</a>.
+  </p>
+  <h2>So how did ELO perform?</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Accuracy (%)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Home team only</td>
+        <td>56.6</td>
+      </tr>
+      <tr>
+        <td>Older team only</td>
+        <td>63.0</td>
+      </tr>
+      <tr>
+        <td>Player-based sum (Model v2a)</td>
+        <td>63.7</td>
+      </tr>
+      <tr>
+        <td>Player-based sum (Model v2b)</td>
+        <td>65.8</td>
+      </tr>
+      <tr>
+        <td><strong>ELO (basic, margin-adjusted)</strong></td>
+        <td><strong>67.4</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    ELO tipped the winner in 67.4% of games since 2011 (I used 2010 to build out the ratings for 2011 onwards). So, it performs a little better than the bottom-up model (though, not significantly).
+  </p>
+  <p>
+    I think I am now almost at the stage where I can start to try and put together all the pieces into one (hopefully) super predictive model. Before that, I will do some work to see if there is anything else to add.
+  </p>
+</div>
+
+  </main>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
