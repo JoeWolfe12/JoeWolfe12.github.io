@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Home Ground Advantage Analysis – El Punce</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Bigfoot pop-up footnotes  (CSS + JS) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot-default.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot.min.js"></script>
+  <script>bigfoot.default();</script>
+
+  <link rel="icon" href="/assets/images/sabinicon.png" type="image/png">
+</head>
+<body>
+
+  <!-- MAIN NAV BAR (simple, four links) -->
+  <nav class="nav-container">
+    <div class="nav-inner">
+      <a href="/"          class="">Home</a>
+      <a href="/about/"    class="">About</a>
+      <a href="/projects/" class="active">Projects</a>
+      <a href="/thoughts/" class="">Thoughts</a>
+    </div>
+  </nav>
+    <nav class="breadcrumb">
+      <a href="/projects/">Projects</a> &nbsp;›&nbsp;
+      <a href="/projects/afl-data/">Footy Numbers</a>
+    </nav>
+  
+
+  <main>
+    <div class="page-box">
+  <h1>Home Ground Advantage: How Much Does It Matter?</h1>
+  <p>
+    Our initial analysis showed that home ground advantage is important, so I’ll need to build some aspect of it into my overall AFL predictive model. But to do so, I needed to answer a few key questions:
+    <ul>
+      <li>Can we quantify home ground advantage?</li>
+      <li>Does it exist when the away team is from the same state?</li>
+      <li>Does the advantage increase with distance travelled?</li>
+      <li>How many points is home ground advantage worth?</li>
+    </ul>
+  </p>
+
+  <p>
+    To answer these, I built out a dataframe with new features:
+    <ul>
+      <li>Whether a game was home vs. interstate or intrastate opposition</li>
+      <li>The distance travelled (using city location—so, e.g., Melbourne vs. Melbourne = 0)</li>
+      <li><strong>Note:</strong> I treated Geelong as interstate for this analysis, as they have a dedicated home ground outside Melbourne</li>
+      <li>Teams playing frequent games at a neutral venue (e.g., Darwin, Tasmania) were considered to have "home" status for those matches</li>
+    </ul>
+  </p>
+
+  <h2>Key Results</h2>
+  <p>
+    The data lines up with what you’d expect:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Home Win Rate (%)</th>
+        <th>Avg Home Margin (pts)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>All games</td><td>57.0</td><td>+6.7</td></tr>
+      <tr><td>Interstate</td><td>58.8</td><td>+8.5</td></tr>
+      <tr><td>Not Interstate</td><td>52.5</td><td>+2.0</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Home teams (excluding neutral venues) win 57% of the time, but <strong>most of this advantage comes from interstate travel</strong>.
+    When the away team travels interstate, the home team gains an average margin of 8.5 points. Against intrastate opponents, the advantage drops to just 2 points.
+  </p>
+
+  <h2>Does Distance Matter?</h2>
+  <p>
+    Regression analysis found that <strong>distance travelled</strong> and <strong>neutral venue</strong> both had large p-values—meaning they are not statistically significant predictors of home margin. For the full notebook and code, see <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">GitHub</a>.
+  </p>
+
+  <h2>Conclusion</h2>
+  <p>
+    Home ground advantage in the AFL is real, but almost entirely explained by interstate travel. Now that I’ve quantified this, I can move on to the next set of features for the predictive model.
+  </p>
+</div>
+
+  </main>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
