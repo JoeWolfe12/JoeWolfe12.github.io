@@ -1,0 +1,130 @@
+---
+layout: default
+title: Anything Else?
+permalink: /projects/afl-data/anything-else
+---
+
+<div class="page-box">
+  <h1>Anything Else?</h1>
+
+  <p>
+    I’ve now covered what will form the basis for my predictive model: 
+    <a href="https://elpunce.com/projects/afl-data/elo-rating.html" target="_blank" rel="noopener">ELO</a>, 
+    <a href="https://elpunce.com/projects/afl-data/home-ground.html" target="_blank" rel="noopener">home ground</a>, 
+    <a href="https://elpunce.com/projects/afl-data/age-analysis.html" target="_blank" rel="noopener">team age</a>, 
+    and 
+    <a href="https://elpunce.com/projects/afl-data/player-profiles-step2.html" target="_blank" rel="noopener">building a model from players up</a>.
+  </p>
+
+  <p>
+    What's left to look at? Well, there might be something that I am missing so I will test out a couple more theories.
+  </p>
+
+  <h2>Head to head history: do some teams have an edge over others?</h2>
+
+  <p>
+    I put this to the test by looking at head to head history going back 3, 4, 5, 6, and 7 games. For each of these I checked whether there was any relationship between the amount of wins and the result of the next game. Over the entire range the accuracy was consistently around 58–59%, i.e the team with the better history won 58-59% of the time. This is well above random chance (and better than just picking the home team).
+  </p>
+  <p>
+    One thing I am cognizant of is not overlapping the same thing in different parts of the model. While head to head history does seem to have some relevance to the outcome, it is not as meaningful as either ELO or the player impact model I built. It is most likely that a team with a positive head to head history will win because it is the better team (and therefore captured by other parts of the model). The R squared value of this variable (~2% across all number of head to head games that I looked at) tells me that adding in head to head history gives me little information above and beyond what I already have in the model.
+  </p>
+  <p>
+    <strong>In short:</strong> head to head history itself won't be added to the model because it's covered by other parts already.
+  </p>
+
+  <h2>The weather: does rain make a difference?</h2>
+  <p>
+    Next up I want to take a look at whether rain makes a difference, specifically looking at whether shorter teams play better if it rains. So, at a basic level, rain does mean that games are slightly lower scoring, with the likelihood of blowouts being lower:
+  </p>
+
+  <!-- Boxplot of Absolute Margin by Weather (Chart.js) -->
+  <div style="max-width: 600px; margin: 2em auto;">
+    <canvas id="marginBoxplot" height="240"></canvas>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot/build/Chart.BoxPlot.js"></script>
+  <script>
+  const ctx = document.getElementById('marginBoxplot').getContext('2d');
+  const data = {
+    labels: ['Dry', 'Rain'],
+    datasets: [{
+      label: 'Absolute Margin',
+      backgroundColor: '#6382d6',
+      borderColor: '#2d396b',
+      borderWidth: 2,
+      outlierColor: '#999',
+      padding: 10,
+      itemRadius: 0,
+      data: [
+        {
+          min: 0,
+          q1: 13.0,
+          median: 29.0,
+          q3: 50.0,
+          max: 105,
+          mean: 34.21
+        },
+        {
+          min: 0,
+          q1: 12.0,
+          median: 27.0,
+          q3: 45.0,
+          max: 94,
+          mean: 32.36
+        }
+      ]
+    }]
+  };
+
+  const options = {
+    plugins: {
+      legend: {display: false},
+      title: {
+        display: true,
+        text: 'Absolute Margin by Weather'
+      }
+    },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'Absolute Margin'
+        }
+      }
+    }
+  };
+
+  new Chart(ctx, {
+    type: 'boxplot',
+    data: data,
+    options: options
+  });
+  </script>
+
+  <p>
+    When we add height to the equation, there is a very slight impact for the win rates when it rains:
+    <pre>
+Rain?    Win rate
+False    0.477941
+True     0.464655
+    </pre>
+  </p>
+
+  <p>
+    While it was surprising that the taller team was more likely to lose, the impact of rain was not really enough to make me want to add it to the model. Running regression analysis over both the win/loss outcome and the margin told me that rain and height were not material. Rain ended up being a little bit like Linkin Park: in the end, it didn't really matter<sup>[1]</sup>.
+  </p>
+
+  <h2>Next Steps</h2>
+  <p>
+    So, now I think I am ready to try and bring the model together to (hopefully) predict game winners!
+  </p>
+  <p>
+    For more information on the different analyses run, please visit the 
+    <a href="https://github.com/JoeWolfe12/AFL-data-analysis" target="_blank" rel="noopener">GitHub repository</a>.
+  </p>
+</div>
+
+<hr>
+<small>
+  [1] https://www.youtube.com/watch?v=eVTXPUF4Oz4
+</small>
