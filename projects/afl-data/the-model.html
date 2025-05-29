@@ -20,7 +20,7 @@ permalink: /projects/afl-data/the-model
     <li><a href="https://elpunce.com/projects/afl-data/elo-rating.html" target="_blank" rel="noopener">Team ELO</a></li>
     <li><a href="https://elpunce.com/projects/afl-data/player-profiles-step2.html" target="_blank" rel="noopener">Player impact scores</a></li>
     <li><a href="https://elpunce.com/projects/afl-data/home-ground.html" target="_blank" rel="noopener">Home ground advantage</a></li>
-    <li><a href="https://elpunce.com/projects/afl-data/momentum.html" target="_blank" rel="noopener">Team momentum</a></li>
+    <li><a href="https://elpunce.com/projects/afl-data/model-step1.html" target="_blank" rel="noopener">Team momentum</a></li>
   </ul>
 
   <p>
@@ -34,7 +34,7 @@ permalink: /projects/afl-data/the-model
   </ul>
 
   <p>
-    When I first started building out this model, my aim was to be able to predict the winner of a game of footy ~80% of the time. Now, footy is an unpredictable sport (<a href="https://elpunce.com/projects/afl-data/predictability.html" target="_blank" rel="noopener">see here</a>), but I had faith I could decipher the indecipherable. So, how did I go?
+    When I first started building out this model, my aim was to be able to predict the winner of a game of footy ~80% of the time. Now, footy is an unpredictable sport (<a href="https://elpunce.com/projects/afl-data/footy-is-unpredictable.html" target="_blank" rel="noopener">see here</a>), but I had faith I could decipher the indecipherable. So, how did I go?
   </p>
 
   <p>
@@ -97,7 +97,7 @@ permalink: /projects/afl-data/the-model
   </table>
 
   <p>
-    <strong>AUC (Area Under the Curve)</strong> measures how well the model can rank or separate winners from losers. An AUC of 0.5 means random guessing, while 1.0 is perfect discrimination. My best model’s AUC of 0.773 means that, for a randomly chosen game, the model is about 77% likely to assign a higher probability to the actual winner than to the loser. 
+    AUC (Area Under the Curve) measures how well the model can rank or separate winners from losers. An AUC of 0.5 means random guessing, while 1.0 is perfect discrimination. My best model’s AUC of 0.773 means that, for a randomly chosen game, the model is about 77% likely to assign a higher probability to the actual winner than to the loser. 
   </p>
 
   <p>
@@ -105,7 +105,7 @@ permalink: /projects/afl-data/the-model
   </p>
 
   <table>
-    <caption>Model Confidence and Accuracy (Percentages)</caption>
+    <caption>2024 season Model Confidence and Accuracy (Percentages)</caption>
     <thead>
       <tr>
         <th>How sure?</th>
@@ -149,7 +149,7 @@ permalink: /projects/afl-data/the-model
   </table>
 
   <table>
-    <caption>Model Confidence and Accuracy (Counts)</caption>
+    <caption>2024 season Model Confidence and Accuracy (Counts)</caption>
     <thead>
       <tr>
         <th>How sure?</th>
@@ -208,7 +208,7 @@ permalink: /projects/afl-data/the-model
   </div>
 
   <p>
-    My MAE (mean absolute error) was ~28 points off; this was a ~20% improvement on what the baseline MAE would be if you predicted 0 margin for each game (i.e., a draw).
+    My MAE (mean absolute error) was ~28 points off; this was a ~20% improvement on what the baseline MAE would be if you predicted 0 margin for each game (i.e a draw).
   </p>
 
   <p>
