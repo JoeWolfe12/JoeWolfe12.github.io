@@ -29,7 +29,7 @@ permalink: /projects/afl-data/anything-else
     One thing I am cognizant of is not overlapping the same thing in different parts of the model. While head to head history does seem to have some relevance to the outcome, it is not as meaningful as either ELO or the player impact model I built. It is most likely that a team with a positive head to head history will win because it is the better team (and therefore captured by other parts of the model). The R squared value of this variable (~2% across all number of head to head games that I looked at) tells me that adding in head to head history gives me little information above and beyond what I already have in the model.
   </p>
   <p>
-    <strong>In short:</strong> head to head history itself won't be added to the model because it's covered by other parts already.
+    In short: head to head history itself won't be added to the model because it's covered by other parts already.
   </p>
 
   <h2>The weather: does rain make a difference?</h2>
@@ -41,32 +41,20 @@ permalink: /projects/afl-data/anything-else
   <thead>
     <tr>
       <th>Rain?</th>
-      <th>Q1</th>
       <th>Median</th>
-      <th>Q3</th>
       <th>Mean</th>
-      <th>Min</th>
-      <th>Max</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>No</td>
-      <td>13.0</td>
       <td>29.0</td>
-      <td>50.0</td>
       <td>34.21</td>
-      <td>0</td>
-      <td>105</td>
     </tr>
     <tr>
       <td>Yes</td>
-      <td>12.0</td>
       <td>27.0</td>
-      <td>45.0</td>
       <td>32.36</td>
-      <td>0</td>
-      <td>94</td>
     </tr>
   </tbody>
 </table>
@@ -93,7 +81,7 @@ permalink: /projects/afl-data/anything-else
   </p>
 
   <p>
-    While it was surprising that the taller team was more likely to lose, the impact of rain was not really enough to make me want to add it to the model. Running regression analysis over both the win/loss outcome and the margin told me that rain and height were not material. Rain ended up being a little bit like Linkin Park: in the end, it didn't really matter<sup>[1]</sup>.
+    While it was surprising that the taller team was more likely to lose, the impact of rain was not really enough to make me want to add it to the model. Running regression analysis over both the win/loss outcome and the margin told me that rain and height were not material. Rain ended up being a little bit like Linkin Park: in the end, it didn't really matter<sup id="fnref1"><a href="#fn1" rel="footnote">1</a></sup>.
   </p>
 
   <h2>Next Steps</h2>
@@ -106,7 +94,7 @@ permalink: /projects/afl-data/anything-else
   </p>
 </div>
 
-<hr>
-<small>
-  [1] https://www.youtube.com/watch?v=eVTXPUF4Oz4
-</small>
+
+<h2>Footnotes</h2>
+  <ol>
+    <li id="fn1">
