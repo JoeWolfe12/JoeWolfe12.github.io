@@ -70,69 +70,40 @@
   <p>
     Next up I want to take a look at whether rain makes a difference, specifically looking at whether shorter teams play better if it rains. So, at a basic level, rain does mean that games are slightly lower scoring, with the likelihood of blowouts being lower:
   </p>
-
-  <!-- Boxplot of Absolute Margin by Weather (Chart.js) -->
-  <div style="max-width: 600px; margin: 2em auto;">
-    <canvas id="marginBoxplot" height="240"></canvas>
-  </div>
-  <script>
-  const ctx = document.getElementById('marginBoxplot').getContext('2d');
-  const data = {
-    labels: ['Dry', 'Rain'],
-    datasets: [{
-      label: 'Absolute Margin',
-      backgroundColor: '#6382d6',
-      borderColor: '#2d396b',
-      borderWidth: 2,
-      outlierColor: '#999',
-      padding: 10,
-      itemRadius: 0,
-      data: [
-        {
-          min: 0,
-          q1: 13.0,
-          median: 29.0,
-          q3: 50.0,
-          max: 105,
-          mean: 34.21
-        },
-        {
-          min: 0,
-          q1: 12.0,
-          median: 27.0,
-          q3: 45.0,
-          max: 94,
-          mean: 32.36
-        }
-      ]
-    }]
-  };
-
-  const options = {
-    plugins: {
-      legend: {display: false},
-      title: {
-        display: true,
-        text: 'Absolute Margin by Weather'
-      }
-    },
-    scales: {
-      y: {
-        title: {
-          display: true,
-          text: 'Absolute Margin'
-        }
-      }
-    }
-  };
-
-  new Chart(ctx, {
-    type: 'boxplot',
-    data: data,
-    options: options
-  });
-  </script>
-
+<table>
+  <caption>Absolute Margin by Weather</caption>
+  <thead>
+    <tr>
+      <th>Rain?</th>
+      <th>Q1</th>
+      <th>Median</th>
+      <th>Q3</th>
+      <th>Mean</th>
+      <th>Min</th>
+      <th>Max</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>No</td>
+      <td>13.0</td>
+      <td>29.0</td>
+      <td>50.0</td>
+      <td>34.21</td>
+      <td>0</td>
+      <td>105</td>
+    </tr>
+    <tr>
+      <td>Yes</td>
+      <td>12.0</td>
+      <td>27.0</td>
+      <td>45.0</td>
+      <td>32.36</td>
+      <td>0</td>
+      <td>94</td>
+    </tr>
+  </tbody>
+</table>
   <p>
     When we add height to the equation, there is a very slight impact for the win rates when it rains:
 <table>

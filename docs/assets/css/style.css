@@ -80,6 +80,7 @@ th,td      { padding:.75rem 1rem; border-bottom:1px solid #e5e7eb; vertical-alig
 th         { font-weight:600; color:#374151; }
 tr:nth-child(even){ background:#fafafa; }
 tr:hover   { background:#f1f5f9; }
+table, th, td { text-align: center; }
 
 /* -------------------------------------------------
    CODE BLOCKS (overlap fix preserved)
