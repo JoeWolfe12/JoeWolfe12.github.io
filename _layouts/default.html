@@ -4,16 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ page.title }} – {{ site.title | default: "My Site" }}</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js core library (specific version) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <!-- Chart.js boxplot/violin plugin (version to match) -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@4.0.1/dist/chartjs-chart-box-and-violin-plot.min.js"></script>
   <!-- Main stylesheet -->
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-
   <!-- Bigfoot pop-up footnotes  (CSS + JS) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot-default.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bigfoot/dist/bigfoot.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@4.0.1/dist/chartjs-chart-box-and-violin-plot.min.js"></script>
-  <script>bigfoot.default();</script>
-
+  <script>
+    if (typeof bigfoot === 'function') {
+      bigfoot();
+    }
+  </script>
   <link rel="icon" href="{{ '/assets/images/sabinicon.png' | relative_url }}" type="image/png">
 </head>
 <body>
